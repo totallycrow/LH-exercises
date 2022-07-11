@@ -9,7 +9,7 @@ function filterWith(arr, phrase) {
     const comparisonCheck = (givenPhrase, itemPhrase) => {
 
       // **************************************
-      // Check for any 3 or matching characters
+      // Check for any 3 or more matching characters
       // **************************************
 
       // const phraseRegexp = new RegExp(`[${givenPhrase}]`)
