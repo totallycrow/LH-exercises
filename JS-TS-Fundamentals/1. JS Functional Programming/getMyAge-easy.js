@@ -15,7 +15,7 @@ function getMyAge(input) {
   let yourBirthYear;
 
   // Set valid birth year between 1990 and 2022 as per business requirements
-  let validYear = /(199\d|20[01]\d|202[0-2])/;
+  const validYear = /(199\d|20[01]\d|202[0-2])/;
 
   // Validate input data type and assign birth year as string
   if (inputType === "[object String]") {
