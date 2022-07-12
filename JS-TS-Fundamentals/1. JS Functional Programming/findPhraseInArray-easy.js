@@ -16,11 +16,10 @@ const inputData = [
   "nodeJS",
 ];
 
-// immutability pricible
+// // immutability pricible
 
-const arr = [1,2,3,4]
-
-findPhraseInArray(arr, 1)
+// // const arr = [1, 2, 3, 4];
+// findPhraseInArray(arr, 1);
 
 const findPhraseInArray = (array, phrase) => {
   // isArray array -> throw new Error
@@ -30,27 +29,33 @@ const findPhraseInArray = (array, phrase) => {
   // 2. logika
   // 3. wymagań biznesowych
 
-  if (array.length > 0) {
-    return []
+  // VALIDATION
+  const inputPhraseType = Object.prototype.toString.call(phrase);
+
+  if (!Array.isArray(array) && inputPhraseType !== "[Object string]") {
+    throw new Error("Incorrect input type");
   }
 
+  if (array.length <= 0) {
+    return [];
+  }
+
+  // FIND PHRASE
   let results = [];
 
   array.forEach((item, index) => {
-    const isMatching = item.toLowerCase() === phrase
+    const isMatching = item.toLowerCase() === phrase.toLowerCase();
 
     if (isMatching) {
       results.push([index, item]);
     }
   });
 
-  const isEmpty = results.length > 0;
-
-  if (isEmpty) return results;
+  const isEmpty = results.length <= 0;
+  if (!isEmpty) return results;
 
   return "Phrase not found in the array.";
 };
-
 
 // return array.filter(el=>{
 //     return el.toLowerCase() === phrase

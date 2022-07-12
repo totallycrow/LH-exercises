@@ -1,8 +1,4 @@
 function getMyAge(input) {
-  const inputType = Object.prototype.toString.call(input);
-
-  console.log(inputType);
-
   // 1. typy
   // jeśli typ date => handleDate
   // jeśli typ string => handleString
@@ -14,19 +10,39 @@ function getMyAge(input) {
   // 3. wymaganie biznesowym
   // nie można wprowadzić roku przed 1990
 
-  const currentYear = new Date().getFullYear();
-  const yourBirthYear = new Date(String(input)).getFullYear();
-  return currentYear - yourBirthYear;
+  // VALIDATION
+  const inputType = Object.prototype.toString.call(input);
+  let yourBirthYear;
+
+  // Set valid birth year between 1990 and 2022 as per business requirements
+  let validYear = /(199\d|20[01]\d|202[0-2])/;
+
+  // Validate input data type and assign birth year as string
+  if (inputType === "[object String]") {
+    yourBirthYear = input;
+  } else if (inputType === "[object Date]") {
+    yourBirthYear = String(input.getFullYear());
+  } else if (inputType === "[object Number]") {
+    yourBirthYear = String(input);
+  } else throw new Error("Incorrect input type");
+
+  // Validate correct year
+  if (yourBirthYear.match(validYear) === null) {
+    throw new Error("Invalid birth year");
+  }
+
+  const currentYear = parseInt(new Date().getFullYear());
+  return currentYear - parseInt(yourBirthYear);
 }
 
-// const isObject = (obj) => {
-//   return Object.prototype.toString.call(obj) === "[object Date]";
-// };
+// TESTING
 
-const result1 = getMyAge(new Date(1990, 1, 1));
-const result2 = getMyAge("1990");
-const result3 = getMyAge(1990);
+console.log(getMyAge(new Date(1990, 1, 1)));
+console.log(getMyAge(1990));
+console.log(getMyAge("1990"));
 
-console.log(result1);
-console.log(result2);
-console.log(result3);
+//test for errors
+// console.log(getMyAge(["1995"]));
+// console.log(getMyAge("3000"));
+// console.log(getMyAge(new Date(1980, 1, 1)));
+// console.log(getMyAge({ year: "1990" }));
