@@ -10,15 +10,15 @@ function filterWith(arr, phrase) {
   // VALIDATION
   const inputPhraseType = Object.prototype.toString.call(phrase);
 
-  if (!Array.isArray(arr)) {
-    throw new Error("Valid array must be provided");
-  }
-
   if (
     inputPhraseType !== "[object String]" &&
     inputPhraseType !== "[object Number]"
   ) {
-    throw new Error("Valid string phrase must be provided");
+    throw new Error("Valid phrase must be provided");
+  }
+
+  if (!Array.isArray(arr)) {
+    throw new Error("Valid array must be provided");
   }
 
   // SEARCH
@@ -30,51 +30,43 @@ function filterWith(arr, phrase) {
 const searchArray = (item, phrase) => {
   // OBJECT VALIDATION
   const itemType = Object.prototype.toString.call(item);
+
+  // CHECK OBJECT
   if (itemType === "[object Object]") {
-    console.log("**********************");
-    console.log("START ITERATION - LEVEL OBJECT");
+    const itemValues = Object.values(item);
 
-    // CHECK ALL PROPERTIES
-
-    // Object.values({abc:1, cba:2}) -> [1,2]
-
-    for (key in item) {
-      console.log("ITEM TYPE:", typeof item);
-      console.log("**********************");
-      console.log(key);
-
-      // CHECK FOR MATCH
-
-      if (comparisonCheck(phrase, item[key])) {
-        console.log("------------MATCH-----------");
-        console.log(key);
-        console.log(item);
-        console.log(item[key]);
-        console.log("ITEM TYPE:", typeof item);
+    let matchedItemValues = itemValues.filter((element) => {
+      if (comparisonCheck(phrase, element)) {
         return true;
       }
 
-      // ELSE CHECK FOR AN ARRAY
-
-      if (Array.isArray(item[key])) {
-        console.log("ARRAY FOUND");
-
+      if (Array.isArray(element)) {
         // level 2 deep
-        results = item[key].filter((element) => searchArray(element, phrase));
+        // const foundMatch = element.filter((el) => searchArray(el, phrase));
+        // console.log(foundMatch);
 
-        if (results.length > 0) {
-          return true;
+        // if (foundMatch.length > 0) {
+        //   return true;
+        // }
+
+        // More efficient solution?
+        for (let i = 0; i < element.length; i++) {
+          if (searchArray(element[i], phrase)) {
+            return true;
+          }
         }
       }
-    }
-    // END OF OBJECT CASE
-    // CHECK VALUES
-    if (comparisonCheck(phrase, item)) {
-      console.log("match");
-      console.log("ITEM: ");
-      console.log(item);
+    });
+
+    if (matchedItemValues.length > 0) {
       return true;
     }
+    return false;
+  }
+
+  // CHECK STRING/NUMBER
+  if (comparisonCheck(phrase, item)) {
+    return true;
   }
 };
 
@@ -234,22 +226,6 @@ console.log("****************");
 console.log(
   "*****************************************************************************"
 );
-console.log(filterWith(data, "nisi"));
-
 const resultTest = filterWith(data, "nisi");
-
 console.log("------TEST RESULT ARRAY: ------------");
 console.log(resultTest);
-
-// console.log('****************')
-// console.log('****************')
-// console.log('****************')
-// console.log('*****************************************************************************')
-
-// console.log(filterWith(data, "Delacruz Acevedo"))
-
-// console.log('****************')
-// console.log('****************')
-// console.log('****************')
-// console.log('*****************************************************************************')
-// console.log(filterWith(data, "Cummings Baxter"))
