@@ -1,9 +1,8 @@
 function filterWith(arr, phrase) {
 
     // - od 0 do 2 znaków w phrase zwracało pusty array,
-    // ??
-    if(phrase.length <= 2) {
-      return false
+    if (phrase.length < 2) {
+      return []
     }
 
     const comparisonCheck = (givenPhrase, itemPhrase) => {
@@ -20,7 +19,7 @@ function filterWith(arr, phrase) {
       //   return true
       // } else return false;
 
-      const phraseRegexp = new RegExp(`.*${givenPhrase}.*`)
+      const phraseRegexp = new RegExp(givenPhrase)
       const match = String(itemPhrase).match(phraseRegexp);
 
       console.log(match)
@@ -45,6 +44,8 @@ function filterWith(arr, phrase) {
         console.log('START ITERATION - LEVEL OBJECT')
         
         // CHECK ALL PROPERTIES
+
+        Object.values({abc:1, cba:2}) -> [1,2]
 
         for(key in item) {
 
@@ -87,7 +88,10 @@ function filterWith(arr, phrase) {
     };
     
     } 
-    
+
+    // 1. sprawdz string/number
+    // 2. sprawdz array
+    // 3. sprawdz obiekt
   
   result = arr.filter(element => searchArray(element)) 
   return result 
