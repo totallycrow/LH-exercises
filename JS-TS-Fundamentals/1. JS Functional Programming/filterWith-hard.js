@@ -1,15 +1,17 @@
 function filterWith(arr, phrase) {
-  // - od 0 do 2 znaków w phrase zwracało pusty array,
-  if (phrase.length < 2) {
-    return [];
-  }
   // 1. sprawdz string/number
   // 2. sprawdz array
   // 3. sprawdz obiekt
 
   // VALIDATION
-  const inputPhraseType = Object.prototype.toString.call(phrase);
 
+  // Input array validation
+  if (!Array.isArray(arr) || arr.length <= 0) {
+    throw new Error("Valid array must be provided");
+  }
+
+  // Phrase validation
+  const inputPhraseType = Object.prototype.toString.call(phrase);
   if (
     inputPhraseType !== "[object String]" &&
     inputPhraseType !== "[object Number]"
@@ -17,11 +19,11 @@ function filterWith(arr, phrase) {
     throw new Error("Valid phrase must be provided");
   }
 
-  if (!Array.isArray(arr)) {
-    throw new Error("Valid array must be provided");
+  if (String(phrase).length < 2) {
+    return [];
   }
 
-  // SEARCH
+  // MAIN SEARCH
   return arr.filter((element) => searchArray(element, phrase));
 }
 
@@ -226,6 +228,6 @@ console.log("****************");
 console.log(
   "*****************************************************************************"
 );
-const resultTest = filterWith(data, "nisi");
+const resultTest = filterWith(data, 484);
 console.log("------TEST RESULT ARRAY: ------------");
 console.log(resultTest);
