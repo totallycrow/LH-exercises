@@ -40,6 +40,10 @@ const findPhraseInArray = (array, phrase) => {
     return [];
   }
 
+  if (phrase.length <= 0) {
+    throw new Error("Phrase must not be empty");
+  }
+
   // FIND PHRASE
   let results = [];
 
