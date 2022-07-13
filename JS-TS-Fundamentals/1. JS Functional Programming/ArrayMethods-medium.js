@@ -1,7 +1,8 @@
-// ***********************************
+// **************** FOREACH *******************
 const forEachFn = (array, callback) => {
   //   // VALIDATION
   validateCallback(callback);
+
   if (!validateArray(array)) {
     console.log("returned false");
     return;
@@ -13,10 +14,11 @@ const forEachFn = (array, callback) => {
   }
 };
 
-// ***********************************
+// ****************** MAP *****************
 const mapFn = (array, callback) => {
   //   // VALIDATION
   validateCallback(callback);
+
   if (!validateArray(array)) {
     console.log("returned false");
     return;
@@ -29,12 +31,14 @@ const mapFn = (array, callback) => {
   }
   return mappedArray;
 };
-// ***********************************
+
+// **************** ENTRIES ****************
 const entriesFn = (array) => {
   if (!validateArray(array)) {
     console.log("returned false");
     return;
   }
+
   const arrayLength = array.length;
   let entries = [];
 
@@ -45,13 +49,15 @@ const entriesFn = (array) => {
   return entries;
 };
 
-// ***********************************
+// ***************** FILTER **************
 const filterFn = (array, callback) => {
   validateCallback(callback);
+
   if (!validateArray(array)) {
     console.log("returned false");
     return;
   }
+
   const arrayLength = array.length;
   let filteredArray = [];
 
@@ -63,7 +69,8 @@ const filterFn = (array, callback) => {
   console.log(filteredArray);
   return filteredArray;
 };
-// ***********************************
+
+// ****************** REDUCE ************
 const reduceFn = (array, callback, initial) => {
   //   // VALIDATION
   //   validateCallback(callback);
@@ -78,7 +85,7 @@ const reduceFn = (array, callback, initial) => {
   let initialValue;
   if (initialValueType === "[object Undefined]") {
     initialValue = array[0];
-  } else initialValue = inital;
+  } else initialValue = initial;
 
   console.log(array);
   console.log(callback);
@@ -87,20 +94,60 @@ const reduceFn = (array, callback, initial) => {
   let result = initialValue;
 
   for (let i = 0; i < arrayLength; i++) {
-    result = callback(array[i]);
+    console.log(initialValue);
+    console.log(array[i]);
+    result = callback(result, array[i]);
   }
 
   console.log("RESULT");
   console.log(result);
   return result;
 };
-// ***********************************
-const everyFn = (array, callback) => {};
-// ***********************************
-const someFn = (array, callback) => {};
+
+// ****************** EVERY *****************
+const everyFn = (array, callback) => {
+  validateCallback(callback);
+
+  if (!validateArray(array)) {
+    console.log("returned false");
+    return;
+  }
+
+  const arrayLength = array.length;
+
+  for (let i = 0; i < arrayLength; i++) {
+    if (!callback(array[i])) {
+      return false;
+    }
+    return true;
+  }
+};
+
+// ****************** SOME *****************
+const someFn = (array, callback) => {
+  validateCallback(callback);
+
+  if (!validateArray(array)) {
+    console.log("returned false");
+    return;
+  }
+
+  const arrayLength = array.length;
+
+  for (let i = 0; i < arrayLength; i++) {
+    console.log(array[i]);
+
+    if (callback(array[i])) {
+      console.log(callback(array[i]));
+      return true;
+    }
+  }
+  return false;
+};
 
 // ***********************************
 // HELPER FUNCTIONS
+// ***********************************
 
 function validateArray(array) {
   const callingFunction = validateArray.caller.name;
@@ -138,7 +185,10 @@ function validateCallback(callback) {
   }
 }
 
+// ***********************************
 // *************** TESTING *******************
+// ***********************************
+
 const testArray = [1, 2, 3, 4];
 
 // const test = forEachFn([1, 2, 3, 4], (element) => console.log(element));
@@ -154,8 +204,9 @@ const testArray = [1, 2, 3, 4];
 
 // console.log(entriesFn(testArray));
 
-console.log(
-  reduceFn(testArray, (acc, el) => {
-    acc + el;
-  })
-);
+// console.log(reduceFn(testArray, (acc, el) => acc + el, 100));
+
+// console.log(everyFn(testArray, (el) => el < 0));
+console.log(someFn(testArray, (el) => el > 1));
+
+// ***********************************
