@@ -7,10 +7,11 @@ const forEachFn = (array, callback) => {
     console.log("returned false");
     return;
   }
-  const arrayLength = array.length;
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
 
   for (let i = 0; i < arrayLength; i++) {
-    callback(array[i]);
+    callback(clonedArray[i]);
   }
 };
 
@@ -23,11 +24,13 @@ const mapFn = (array, callback) => {
     console.log("returned false");
     return;
   }
-  const arrayLength = array.length;
+
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
   let mappedArray = [];
 
   for (let i = 0; i < arrayLength; i++) {
-    mappedArray.push(callback(array[i]));
+    mappedArray.push(clonedArray(array[i]));
   }
   return mappedArray;
 };
@@ -39,11 +42,12 @@ const entriesFn = (array) => {
     return;
   }
 
-  const arrayLength = array.length;
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
   let entries = [];
 
   for (let i = 0; i < arrayLength; i++) {
-    entries.push([i, array[i]]);
+    entries.push([i, clonedArray[i]]);
   }
 
   return entries;
@@ -58,12 +62,13 @@ const filterFn = (array, callback) => {
     return;
   }
 
-  const arrayLength = array.length;
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
   let filteredArray = [];
 
   for (let i = 0; i < arrayLength; i++) {
-    if (callback(array[i])) {
-      filteredArray.push(array[i]);
+    if (callback(clonedArray[i])) {
+      filteredArray.push(clonedArray[i]);
     }
   }
   console.log(filteredArray);
@@ -73,34 +78,38 @@ const filterFn = (array, callback) => {
 // ****************** REDUCE ************
 const reduceFn = (array, callback, initial) => {
   //   // VALIDATION
-  //   validateCallback(callback);
-  //   if (!validateArray(array)) {
-  //     console.log("returned false");
-  //     return;
-  //   }
 
-  const arrayLength = array.length;
   const initialValueType = Object.prototype.toString.call(initial);
 
-  let initialValue;
-  if (initialValueType === "[object Undefined]") {
-    initialValue = array[0];
-  } else initialValue = initial;
-
-  console.log(array);
-  console.log(callback);
-  console.log(initialValue);
-
-  let result = initialValue;
-
-  for (let i = 0; i < arrayLength; i++) {
-    console.log(initialValue);
-    console.log(array[i]);
-    result = callback(result, array[i]);
+  validateCallback(callback);
+  if (!validateArray(array) && initialValueType === "[object Undefined]") {
+    console.log("returned false");
+    throw new TypeError("Reduce of empty array with no initial value");
+  } else if (!validateArray(array)) {
+    return initial;
   }
 
-  console.log("RESULT");
-  console.log(result);
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
+
+  let initialValue;
+  let defaultProvided = true;
+
+  // Check if initial parameter provided to setup the loop accordingly
+  if (initialValueType === "[object Undefined]") {
+    initialValue = clonedArray[0];
+    defaultProvided = false;
+  } else initialValue = initial;
+
+  let result = initialValue;
+  defaultProvided ? (i = 0) : (i = 1);
+
+  for (i; i < arrayLength; i++) {
+    result = callback(result, clonedArray[i]);
+  }
+
+  // console.log("RESULT");
+  // console.log(result);
   return result;
 };
 
@@ -113,10 +122,11 @@ const everyFn = (array, callback) => {
     return;
   }
 
-  const arrayLength = array.length;
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
 
   for (let i = 0; i < arrayLength; i++) {
-    if (!callback(array[i])) {
+    if (!callback(clonedArray[i])) {
       return false;
     }
     return true;
@@ -132,13 +142,14 @@ const someFn = (array, callback) => {
     return;
   }
 
-  const arrayLength = array.length;
+  const clonedArray = [...array];
+  const arrayLength = clonedArray.length;
 
   for (let i = 0; i < arrayLength; i++) {
     console.log(array[i]);
 
-    if (callback(array[i])) {
-      console.log(callback(array[i]));
+    if (callback(clonedArray[i])) {
+      console.log(callback(clonedArray[i]));
       return true;
     }
   }
@@ -189,7 +200,7 @@ function validateCallback(callback) {
 // *************** TESTING *******************
 // ***********************************
 
-const testArray = [1, 2, 3, 4];
+const testArray = [1, 2, 3, 4, 5];
 
 // const test = forEachFn([1, 2, 3, 4], (element) => console.log(element));
 // console.log(test);
@@ -204,9 +215,11 @@ const testArray = [1, 2, 3, 4];
 
 // console.log(entriesFn(testArray));
 
-// console.log(reduceFn(testArray, (acc, el) => acc + el, 100));
+console.log("RECREATED REDUCE:");
+console.log(reduceFn(testArray, (acc, el) => acc + el));
+console.log(testArray.reduce((acc, el) => acc + el));
 
-// console.log(everyFn(testArray, (el) => el < 0));
-console.log(someFn(testArray, (el) => el > 1));
+// console.log(everyFn(testArray, (el) => el > 0));
+// console.log(someFn(testArray, (el) => el > 1));
 
 // ***********************************

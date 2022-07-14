@@ -52,8 +52,10 @@ const searchArray = (item, phrase) => {
         // }
 
         // More efficient solution?
-        for (let i = 0; i < element.length; i++) {
-          if (searchArray(element[i], phrase)) {
+
+        const clonedArray = [...element];
+        for (let i = 0; i < clonedArray.length; i++) {
+          if (searchArray(clonedArray[i], phrase)) {
             return true;
           }
         }
@@ -228,6 +230,6 @@ console.log("****************");
 console.log(
   "*****************************************************************************"
 );
-const resultTest = filterWith(data, 484);
+const resultTest = filterWith(data, "nisi");
 console.log("------TEST RESULT ARRAY: ------------");
 console.log(resultTest);
