@@ -23,13 +23,15 @@ function filterWith(arr, phrase) {
     return [];
   }
 
+  const phraseRegexp = new RegExp(givenPhrase);
+
   // MAIN SEARCH
-  return arr.filter((element) => searchArray(element, phrase));
+  return arr.filter((element) => isPhraseInObject(element, phrase, phraseRegexp));
 }
 
 // ************* HELPER FUNCTIONS *****************
 
-const searchArray = (item, phrase) => {
+const isPhraseInObject = (item, phraseRegexp) => {
   // OBJECT VALIDATION
   const itemType = Object.prototype.toString.call(item);
 
@@ -37,25 +39,15 @@ const searchArray = (item, phrase) => {
   if (itemType === "[object Object]") {
     const itemValues = Object.values(item);
 
-    let matchedItemValues = itemValues.filter((element) => {
-      if (comparisonCheck(phrase, element)) {
-        return true;
+    const matchedItemValues = itemValues.filter((element) => {
+      if (typeof element === "string" || typeof element === "number" ) {
+        return isTwoPhrasesMaching(phraseRegexp, element);
       }
-
       if (Array.isArray(element)) {
-        // level 2 deep
-        // const foundMatch = element.filter((el) => searchArray(el, phrase));
-        // console.log(foundMatch);
-
-        // if (foundMatch.length > 0) {
-        //   return true;
-        // }
-
-        // More efficient solution?
-
         const clonedArray = [...element];
+
         for (let i = 0; i < clonedArray.length; i++) {
-          if (searchArray(clonedArray[i], phrase)) {
+          if (isPhraseInObject(clonedArray[i], phraseRegexp)) {
             return true;
           }
         }
@@ -69,20 +61,18 @@ const searchArray = (item, phrase) => {
   }
 
   // CHECK STRING/NUMBER
-  if (comparisonCheck(phrase, item)) {
+  if (isTwoPhrasesMaching(phrase, item)) {
     return true;
   }
+
+  return false
 };
 
-function comparisonCheck(givenPhrase, itemPhrase) {
-  const phraseRegexp = new RegExp(givenPhrase);
+function isTwoPhrasesMaching(givenPhrase, itemPhrase) {
   const match = String(itemPhrase).match(phraseRegexp);
 
-  console.log(match);
-
-  if (match === null) {
-    return false;
-  } else return true;
+  const isNotNull = match !== null
+  return isNotNull;
 }
 // ********************* DATA ***************************
 
