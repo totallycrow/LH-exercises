@@ -1,5 +1,4 @@
 class Switch {
-  //   cases = [];
   conditions = [];
 
   add(condition, callback) {
@@ -9,8 +8,8 @@ class Switch {
     };
     this.conditions.push(conditionObject);
   }
+
   isValid() {
-    // return this.conditions
     const clonedConditions = [...this.conditions];
 
     return clonedConditions.every((el) => {
