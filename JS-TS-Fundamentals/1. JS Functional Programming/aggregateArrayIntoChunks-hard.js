@@ -32,8 +32,8 @@ function aggregateItems(array, min, max) {
     let lengthDifference = currentArrayLength - randomNum;
 
     if (lengthDifference >= min || lengthDifference === 0) {
-      let push = clonedArray.slice(i, i + randomNum);
-      result.push(push);
+      const chunk = clonedArray.slice(i, i + randomNum);
+      result.push(chunk);
       currentArrayLength -= randomNum;
       i += randomNum;
     }
@@ -68,4 +68,4 @@ console.log(chunks.every((el) => el.length >= 4 || el.length <= 7));
 console.log(chunksNums.every((el) => el.length >= 4 || el.length <= 7));
 
 // ERROR TEST
-const chunksError = aggregateIntoChunks("test");
+// const chunksError = aggregateIntoChunks("test");

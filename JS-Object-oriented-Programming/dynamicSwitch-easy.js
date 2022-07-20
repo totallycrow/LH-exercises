@@ -2,6 +2,10 @@ class Switch {
   conditions = [];
 
   add(condition, callback) {
+    if (typeof callback !== "function") {
+      throw new Error("Invalid callback");
+    }
+
     const conditionObject = {
       condition: condition,
       callback: callback,
@@ -14,13 +18,12 @@ class Switch {
 
     return clonedConditions.every((el) => {
       if (el.condition === false) {
-        this.conditions = ArrayUtility.cleanArray(this.conditions);
+        this.conditions = ArrayUtility.cleanArray();
         return true;
-      } else {
-        el.callback();
-        this.conditions = ArrayUtility.cleanArray(this.conditions);
-        return false;
       }
+      el.callback();
+      this.conditions = ArrayUtility.cleanArray();
+      return false;
     });
   }
 
@@ -28,22 +31,20 @@ class Switch {
     if (this.conditions.length === 0) {
       console.log(true);
       return true;
-    } else {
-      console.log(false);
-      return false;
     }
+    return false;
   }
 }
 
 const ArrayUtility = {
-  cleanArray(array) {
+  cleanArray() {
     return [];
   },
 };
 
 // ma to działać tak:
 const formChecker = new Switch();
-const value = "testsdf";
+const value = "testad";
 
 formChecker.add(value.length < 5, () => {
   console.error("value is too short");
@@ -53,7 +54,6 @@ formChecker.add(!value.includes("@"), () => {
   console.error("value is not an email");
 });
 
-formChecker.isEmpty() === false;
 formChecker.isValid(); // === false
 // console.error('value is to short')
 // console.error('value is not an email')
