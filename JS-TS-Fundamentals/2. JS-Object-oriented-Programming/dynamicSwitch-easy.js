@@ -2,7 +2,8 @@ class Switch {
   conditions = [];
 
   add(condition, callback) {
-    new CallbackValidator(callback).validateType();
+    const validateCallback = new CallbackValidator(callback);
+    validateCallback.validateType();
 
     const conditionObject = {
       condition: condition,
