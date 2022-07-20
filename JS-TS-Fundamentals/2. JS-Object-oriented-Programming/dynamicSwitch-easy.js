@@ -2,9 +2,7 @@ class Switch {
   conditions = [];
 
   add(condition, callback) {
-    if (typeof callback !== "function") {
-      throw new Error("Invalid callback");
-    }
+    new CallbackValidator(callback).validateType();
 
     const conditionObject = {
       condition: condition,
@@ -36,15 +34,30 @@ class Switch {
   }
 }
 
+// Utilities
+
+class CallbackValidator {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  validateType() {
+    if (typeof this.callback !== "function") {
+      throw new Error("Invalid callback");
+    }
+    return true;
+  }
+}
+
 const ArrayUtility = {
   cleanArray() {
     return [];
   },
 };
 
+// ******************
 // ma to działać tak:
 const formChecker = new Switch();
-const value = "testad";
+const value = "test";
 
 formChecker.add(value.length < 5, () => {
   console.error("value is too short");
