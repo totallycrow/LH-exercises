@@ -23,6 +23,8 @@ class EmailBuilder {
   setFrom = (sender) => {
     emailValidator.isEmail(sender);
     this._mail.from = sender;
+
+    // why need return this?
     return this;
   };
 
@@ -108,7 +110,5 @@ const testMail = new EmailBuilder()
   .setHtml("<h1>Header</h1><p>Lorem Ipsum</p>")
   .buildMail();
 console.log(testMail);
-
-// why return this doesnt overwrite remaining fields to default?
 
 // console.log(new EmailBuilder().setTitle("test"));
