@@ -12,14 +12,15 @@
 // Podczas walidacji upewnij się, że:
 // - email jest poprawnym emailem
 // - hasło ma mieć min 8 znaków, co najmniej jedną wielką literę i co najmniej jedną cyfrę oraz co najmniej 1 znak specjalny
-// - płeć musi być ze zbioru [male, female]
 // - data (nieważne jaka wejdzie) do konstruktora musi wejść w formacie MM/DD/YYYY
 // - imię i nazwisko musi być niepuste
 
 // *********************************************************
-// *********************** USER ***********************
+// *********************** USER ****************************
 // *********************************************************
 
+// Assuming new user can only be created by App Class.
+// Otherwise -> validation in constructor too?
 class User {
   constructor(user, access, id = "") {
     (this.id = id),
@@ -45,7 +46,7 @@ class User {
 }
 
 // *********************************************************
-// *********************** APP ***********************
+// *********************** APP *****************************
 // *********************************************************
 
 class App {
@@ -58,14 +59,15 @@ class App {
     App._instance = this;
 
     this.userList = [];
+    +
   }
-  // listOfUsers
-  // createUser(...)
-  // createAdmin(...)
-  // wszystkie metody w których admin ingeruje we właściwości innych użytkowników
 
   createUser = (userObj, access) => {
-    const newUser = new User(userObj, access, idGenerator());
+    Validator.ValidateUser(userObj);
+
+    let newUser = new User(userObj, access, idGenerator());
+    newUser.dob = formatBirthDate(newUser.dob);
+
     this.userList.push(newUser);
   };
 
@@ -83,7 +85,6 @@ class App {
 
     this.userList[userIndex].setPassword(newPass);
     console.log(`Password changed successfully to: ${newPass}`);
-
     console.log("VALIDATED OK");
 
     // if (!Validator.isAdmin(this.userList, adminId)) {
@@ -102,32 +103,30 @@ class App {
 
   //   ADMIN SET EMAIL
   setUserEmail = (adminId, userId, newEmail) => {
-    if (!Validator.isAdmin(this.userList, adminId)) {
-      throw new Error("Invalid admin access");
-    }
-    const userIndex = Validator.findUserById(this.userList, userId);
+    const userIndex = Validator.validateAdminAndUser(
+      adminId,
+      userId,
+      this.userList
+    );
 
-    if (userIndex > 0) {
-      this.userList[userIndex].setEmail(newEmail);
-      console.log(`Email changed successfully to: ${newEmail}`);
-      return true;
-    }
-    throw new Error("User not found");
+    this.userList[userIndex].setEmail(newEmail);
+    console.log(`Email changed successfully to: ${newEmail}`);
+
+    console.log("VALIDATED OK");
   };
 
   //   ADMIN SET ACCESS
   setUserAccess = (adminId, userId, newAccess) => {
-    if (!Validator.isAdmin(this.userList, adminId)) {
-      throw new Error("Invalid admin access");
-    }
-    const userIndex = Validator.findUserById(this.userList, userId);
+    const userIndex = Validator.validateAdminAndUser(
+      adminId,
+      userId,
+      this.userList
+    );
 
-    if (userIndex > 0) {
-      this.userList[userIndex].setAccess(newAccess);
-      console.log(`Email changed successfully to: ${newAccess}`);
-      return true;
-    }
-    throw new Error("User not found");
+    this.userList[userIndex].setAccess(newAccess);
+    console.log(`Access changed successfully to: ${newAccess}`);
+
+    console.log("VALIDATED OK");
   };
 }
 
@@ -137,6 +136,7 @@ class App {
 
 class Validator {
   constructor() {}
+
   //   FIND USER BY ID
   //   ********
   static findUserById = (array, id) => {
@@ -144,6 +144,7 @@ class Validator {
 
     return lookupArray.findIndex((el) => el.id === id);
   };
+
   //   CHECK IF ADMIN
   //   ********
   static isAdmin = (array, id) => {
@@ -153,6 +154,7 @@ class Validator {
     return array[user].access === "admin";
   };
 
+  // VALIDATE IF PROVIDED ADMINID HAS ADMIN ACCESS, AND VALIDATE USER
   static validateAdminAndUser = (adminId, userId, array) => {
     // Checks whether supplied adminId has admin privileges,
     // checks if supplied user exists
@@ -168,6 +170,38 @@ class Validator {
 
     return userIndex;
   };
+
+  // VALIDATE NEW USER OBJECT
+  static ValidateUser = (userObj) => {
+    const { name, surname, email, password, dob } = userObj;
+
+    // Validate Name
+    if (typeof name !== "string" || name.length <= 0) {
+      throw new Error("Invalid User Name Provided");
+    }
+    // Validate Surname
+    if (typeof surname !== "string" || surname.length <= 0) {
+      throw new Error("Invalid User Surname Provided");
+    }
+    // Validate Email
+    if (!validateEmail(email)) {
+      throw new Error("Invalid User Email Provided");
+    }
+    // Validate Password
+    const passwordPattern =
+      /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}/;
+
+    if (!passwordPattern.test(password)) {
+      throw new Error("Invalid User Password Provided");
+    }
+    // Validate DOB
+    const dobType = Object.prototype.toString.call(dob);
+
+    console.log(dobType);
+    if (dobType !== "[object String]" && dobType !== "[object Date]") {
+      throw new Error("Invalid User Date Format");
+    }
+  };
 }
 
 // Helper functions
@@ -180,16 +214,41 @@ const idGenerator = () => {
   return numberId;
 };
 
+const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
+
+const formatBirthDate = (dob) => {
+  let birthDate;
+  const typeOfDob = Object.prototype.toString.call(dob);
+  // Validate input data type and assign birth year as string
+  if (typeOfDob === "[object String]") {
+    birthDate = new Date(dob);
+  } else if (typeOfDob === "[object Date]") {
+    birthDate = dob;
+  } else throw new Error("Incorrect input type");
+
+  // birthDate = new Date(birthDate);
+  const formattedBirthDate = `${
+    birthDate.getMonth() + 1
+  }/${birthDate.getDate()}/${birthDate.getFullYear()}`;
+  return formattedBirthDate;
+};
+
 // *********************************************************
-// *********************** TESTING ***********************
+// *********************** TESTING *************************
 // *********************************************************
 
 const _n = {
-  name: "test1",
-  surname: "test1",
-  dob: "test1",
-  password: "test1",
-  email: "test1",
+  name: "TESTER",
+  surname: "WAYNE",
+  dob: "1 JAN 2021",
+  password: "asdF1asdsadf?",
+  email: "test1@gmail.com",
   access: "normal",
 };
 
@@ -211,13 +270,15 @@ const _a = {
   access: "normal",
 };
 
+const app = new App();
+app.createUser(_n, "normal");
+console.log(app);
+
 const normal = new User(_n, "normal", "123");
 const normal2 = new User(_n2, "normal", "333");
-// console.log(normal);
-const admin = new User(_n, "admin", "666");
-// console.log(admin);
 
-const app = new App();
+const admin = new User(_n, "admin", "666");
+
 app.userList.push(normal);
 app.userList.push(normal2);
 app.userList.push(admin);
@@ -233,44 +294,7 @@ console.log(app);
 console.log("********** START APP ACTIONS ****************");
 
 app.setUserPassword("666", "333", "NEWPASS-OVERWRITE");
-// app.setUserEmail("666", "333", "NEWEMAIL-OVERWRITE");
-// app.setUserAccess("666", "3334", "NEWACCESS-OVERWRITE");
+app.setUserEmail("666", "333", "NEWEMAIL-OVERWRITE");
+app.setUserAccess("666", "333", "NEWACCESS-OVERWRITE");
 
 console.log(app);
-
-// const testUserObj = new User(testUser, "admin", "123");
-// console.log(testUserObj);
-// console.log(testUserObj.constructor);
-// console.log(Object.getPrototypeOf(testUserObj));
-
-// testUserObj.setPassword("newPass");
-// console.log(testUserObj);
-
-// const app = new App();
-
-// console.log(app.userList);
-
-// app.userList.push(testUserObj);
-// console.log(app.userList);
-
-// const app2 = app;
-
-// console.log(app2);
-
-// app.createUser(testUserObj, "user");
-
-// console.log(app2);
-
-// app.createAdmin(testUserObj);
-
-// console.log(app2);
-
-// const user33 = app.userList[2];
-
-// app.setUserPassword(testUserObj, user33, "OVERWRITEPASS");
-// console.log(app);
-
-// console.log(Boolean(Validator.findUserById(app.userList, "123")));
-// console.log(Validator.findUserById(app.userList, "123"));
-
-// console.log(Validator.isAdmin(app.userList, "666"));
