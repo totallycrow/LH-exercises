@@ -59,7 +59,6 @@ class App {
     App._instance = this;
 
     this.userList = [];
-    +
   }
 
   createUser = (userObj, access) => {
