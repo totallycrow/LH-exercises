@@ -16,19 +16,19 @@ const aggregateIntoChunks = (array) => {
 // ************** HELPER FUNCTIONS ********************
 
 function getRandom(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function aggregateItems(array, min, max) {
-  const clonedArray = [...array];
-  const originalArrayLength = [...array].length;
-  let currentArrayLength = [...array].length;
+  const clonedArray = array.slice(0);
+  const originalArrayLength = clonedArray.length;
+  let currentArrayLength = clonedArray.length;
 
   let result = [];
 
   let i = 0;
   while (i < originalArrayLength) {
-    const randomNum = getRandom(min, max + 1);
+    const randomNum = getRandom(min, max);
     let lengthDifference = currentArrayLength - randomNum;
 
     if (lengthDifference >= min || lengthDifference === 0) {

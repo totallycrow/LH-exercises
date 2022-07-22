@@ -1,49 +1,65 @@
 class Switch {
-  conditions = [];
+  _conditions = [];
 
   add(condition, callback) {
-    const validateCallback = new CallbackValidator(callback);
-    validateCallback.validateType();
+    CallbackValidator.validateType(callback);
 
     const conditionObject = {
       condition: condition,
       callback: callback,
     };
+
     this.conditions.push(conditionObject);
   }
 
-  isValid() {
-    const clonedConditions = [...this.conditions];
+  reset() {
+    this.conditions = []
+  }
 
-    return clonedConditions.every((el) => {
+  checkValidity() {
+    const clonedConditions = [...this.conditions];
+    const isValid = clonedConditions.every((el) => {
       if (el.condition === false) {
-        this.conditions = ArrayUtility.cleanArray();
         return true;
       }
       el.callback();
-      this.conditions = ArrayUtility.cleanArray();
       return false;
     });
+    this.reset()
+    return isValid
   }
 
   isEmpty() {
-    if (this.conditions.length === 0) {
-      console.log(true);
-      return true;
-    }
-    return false;
+    return this.conditions.length === 0;
   }
 }
 
 // Utilities
 
-class CallbackValidator {
-  constructor(callback) {
-    this.callback = callback;
+// animal.age
+// cat <---
+
+
+// if (czy kot.age jest animalem) -> true
+
+class TypeValidator {
+ static validateFunction(fn, msg) {
+    if (typeof fn !== "function") {
+      throw new Error(msg);
+    }
+    return true;
   }
-  validateType() {
-    if (typeof this.callback !== "function") {
-      throw new Error("Invalid callback");
+
+  static validateBoolean(bool, msg) {
+    if (typeof bool !== "function") {
+      throw new Error(msg);
+    }
+    return true;
+  }
+
+  static validateBoolean(bool, msg) {
+    if (typeof bool !== "function") {
+      throw new Error(msg);
     }
     return true;
   }
