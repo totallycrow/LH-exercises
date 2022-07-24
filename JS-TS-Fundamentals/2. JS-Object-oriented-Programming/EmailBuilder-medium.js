@@ -12,12 +12,6 @@ class EmailBuilder {
 
   // Stwórz metody które będą zmieniać parametry from, to, title, cc, bcc, html
 
-  // ??????
-  //   setFrom(from) {
-  //     this._mail.from = from;
-  //     return this;
-  //   };
-
   //   SETTERS
 
   setFrom = (sender) => {

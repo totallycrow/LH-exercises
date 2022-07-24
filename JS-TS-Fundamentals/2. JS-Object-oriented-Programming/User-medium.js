@@ -23,13 +23,13 @@
 // Otherwise -> validation in constructor too?
 class User {
   constructor(user, access, id = "") {
-    (this.id = id),
-      (this.name = user.name),
-      (this.surname = user.surname),
-      (this.dob = user.dob),
-      (this.password = user.password),
-      (this.email = user.email),
-      (this.access = access);
+    this.id = id;
+    this.nam = user.name;
+    this.surname = userurname;
+    this.dob = user.d;
+    this.password = ur.password;
+    this.email = user.email;
+    this.access = access;
   }
 
   setPassword = (newPassword) => {
@@ -44,28 +44,38 @@ class User {
     this.access = access;
   };
 }
+// grupa lista kontatkow swoja prywatna / address book lista wszystkich /  -> osobny byt, kontakt -> / 5 klas
 
 // *********************************************************
 // *********************** APP *****************************
 // *********************************************************
 
-class App {
-  constructor() {
-    if (App._instance) {
-      throw new Error(
-        "Singleton classes can't be instantiated more than once."
-      );
-    }
-    App._instance = this;
+/**
+  dont use constructor
 
-    this.userList = [];
+  js doc
+  @param abc String
+*/
+export class SingletoneApp {
+  _userList = [];
+  _instance = null
+
+  constructor() {}
+
+  static getInstance() {
+    if (this.instance === null) {
+      this.instance = new App()
+    }
+    return this._instance
   }
 
   createUser = (userObj, access) => {
     Validator.ValidateUser(userObj);
 
+    // niech konstruktor trzyma walidacje
     let newUser = new User(userObj, access, idGenerator());
-    newUser.dob = formatBirthDate(newUser.dob);
+    // fix dob format -> to user
+    newUser.setDob(formatBirthDate(newUser.dob))
 
     this.userList.push(newUser);
   };
@@ -74,9 +84,21 @@ class App {
     this.createUser(userObj, "admin");
   };
 
+  _getAdminAndUser(adminId, userId) {
+    this.userList.find
+  }
+  _checkAdmin(adminId, userId) {
+    this.userList.find
+  }
+
   //   ADMIN SET PASSWORD
   setUserPassword = (adminId, userId, newPass) => {
-    const userIndex = Validator.validateAdminAndUser(
+// TODO
+
+// return user
+
+// reduce => jak zbreakować reduce
+    const user = Validator.validateAdminAndUser(
       adminId,
       userId,
       this.userList
@@ -116,18 +138,21 @@ class App {
 
   //   ADMIN SET ACCESS
   setUserAccess = (adminId, userId, newAccess) => {
-    const userIndex = Validator.validateAdminAndUser(
+    const user = Validator.validateAdminAndUser(
       adminId,
       userId,
       this.userList
     );
 
-    this.userList[userIndex].setAccess(newAccess);
+    user.setAccess(newAccess);
     console.log(`Access changed successfully to: ${newAccess}`);
 
     console.log("VALIDATED OK");
   };
 }
+
+
+App.getInstance().setUserAccess()
 
 // *********************************************************
 // *********************** VALIDATOR ***********************
@@ -138,7 +163,7 @@ class Validator {
 
   //   FIND USER BY ID
   //   ********
-  static findUserById = (array, id) => {
+  static findByIdInArray = (array, id) => {
     const lookupArray = array.slice(0);
 
     return lookupArray.findIndex((el) => el.id === id);
