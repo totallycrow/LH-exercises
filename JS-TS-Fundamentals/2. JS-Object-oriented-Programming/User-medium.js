@@ -19,15 +19,14 @@
 // *********************** USER ****************************
 // *********************************************************
 
-// Assuming new user can only be created by App Class.
-// Otherwise -> validation in constructor too?
 class User {
   constructor(user, access, id = "") {
+    Validator.ValidateUser(user);
     this.id = id;
-    this.nam = user.name;
-    this.surname = userurname;
-    this.dob = user.d;
-    this.password = ur.password;
+    this.name = user.name;
+    this.surname = user.surname;
+    this.dob = formatBirthDate(user.dob);
+    this.password = user.password;
     this.email = user.email;
     this.access = access;
   }
@@ -56,28 +55,25 @@ class User {
   js doc
   @param abc String
 */
-export class SingletoneApp {
+
+class App {
   _userList = [];
-  _instance = null
+  _instance = null;
 
   constructor() {}
 
+  // returns undefined?
   static getInstance() {
-    if (this.instance === null) {
-      this.instance = new App()
+    if (this._instance === null) {
+      this._instance = new App();
     }
-    return this._instance
+    return this._instance;
   }
 
   createUser = (userObj, access) => {
-    Validator.ValidateUser(userObj);
-
-    // niech konstruktor trzyma walidacje
     let newUser = new User(userObj, access, idGenerator());
-    // fix dob format -> to user
-    newUser.setDob(formatBirthDate(newUser.dob))
 
-    this.userList.push(newUser);
+    this._userList.push(newUser);
   };
 
   createAdmin = (userObj) => {
@@ -85,36 +81,79 @@ export class SingletoneApp {
   };
 
   _getAdminAndUser(adminId, userId) {
-    this.userList.find
+    const clonedArray = this._userList.slice(0);
+    // CLONED ARRAY
+    console.log("GETADMINUSER");
+    console.log(clonedArray);
+
+    const adminAndUser = clonedArray.reduce(
+      (acc, curr, i, arr) => {
+        console.log("CURR ACCESS");
+        console.log(curr.access);
+
+        // Check for admin or user
+        if (curr.id === adminId && curr.access === "admin") {
+          acc["admin"] = curr;
+        } else if (curr.id === userId && curr.access === "normal") {
+          acc["user"] = curr;
+        }
+
+        // Check if all found - early break
+        if (acc.admin !== "" && acc.user !== "") {
+          arr.splice(1);
+        }
+        return acc;
+      },
+      { admin: "", user: "" }
+    );
+
+    // Valide admin and user found
+    if (adminAndUser.admin == "") {
+      throw new Error("Invalid Admin Provided");
+    } else if (adminAndUser.user == "") {
+      throw new Error("Invalid User Provided");
+    }
+
+    return adminAndUser;
   }
-  _checkAdmin(adminId, userId) {
-    this.userList.find
-  }
+  // _checkAdmin(adminId) {
+  //   const user = this._userList.find((el) => el.id === adminId);
+
+  //   if (typeof user === "undefined" || user.access !== "admin") return false;
+
+  //   return true;
+  // }
 
   //   ADMIN SET PASSWORD
   setUserPassword = (adminId, userId, newPass) => {
-// TODO
+    // TODO
 
-// return user
+    // return user
 
-// reduce => jak zbreakować reduce
-    const user = Validator.validateAdminAndUser(
-      adminId,
-      userId,
-      this.userList
-    );
+    // reduce => jak zbreakować reduce
 
-    this.userList[userIndex].setPassword(newPass);
-    console.log(`Password changed successfully to: ${newPass}`);
-    console.log("VALIDATED OK");
+    // OLD CODE
+    // const user = Validator.validateAdminAndUser(
+    //   adminId,
+    //   userId,
+    //   this._userList
+    // );
 
-    // if (!Validator.isAdmin(this.userList, adminId)) {
+    // this._userList[user].setPassword(newPass);
+    // console.log(`Password changed successfully to: ${newPass}`);
+    // console.log("VALIDATED OK");
+
+    this._getAdminAndUser(adminId, userId).user.setPassword(newPass);
+
+    // EVEN OLDER CODE
+
+    // if (!Validator.isAdmin(this._userList, adminId)) {
     //   throw new Error("Invalid admin access");
     // }
-    // const userIndex = Validator.findUserById(this.userList, userId);
+    // const userIndex = Validator.findUserById(this._userList, userId);
 
     // if (userIndex > 0) {
-    //   this.userList[userIndex].setPassword(newPass);
+    //   this._userList[userIndex].setPassword(newPass);
     //   console.log(`Password changed successfully to: ${newPass}`);
     //   return true;
     // }
@@ -124,35 +163,42 @@ export class SingletoneApp {
 
   //   ADMIN SET EMAIL
   setUserEmail = (adminId, userId, newEmail) => {
-    const userIndex = Validator.validateAdminAndUser(
-      adminId,
-      userId,
-      this.userList
-    );
+    // OLD SOLUTION
 
-    this.userList[userIndex].setEmail(newEmail);
-    console.log(`Email changed successfully to: ${newEmail}`);
+    // const userIndex = Validator.validateAdminAndUser(
+    //   adminId,
+    //   userId,
+    //   this._userList
+    // );
 
-    console.log("VALIDATED OK");
+    // this._userList[userIndex].setEmail(newEmail);
+    // console.log(`Email changed successfully to: ${newEmail}`);
+
+    // console.log("VALIDATED OK");
+
+    this._getAdminAndUser(adminId, userId).user.setEmail(newEmail);
   };
 
   //   ADMIN SET ACCESS
   setUserAccess = (adminId, userId, newAccess) => {
-    const user = Validator.validateAdminAndUser(
-      adminId,
-      userId,
-      this.userList
-    );
+    // const user = Validator.validateAdminAndUser(
+    //   adminId,
+    //   userId,
+    //   this._userList
+    // );
 
-    user.setAccess(newAccess);
-    console.log(`Access changed successfully to: ${newAccess}`);
+    // console.log(user);
 
-    console.log("VALIDATED OK");
+    // this._userList[user].setAccess(newAccess);
+    // console.log(`Access changed successfully to: ${newAccess}`);
+
+    // console.log("VALIDATED OK");
+
+    this._getAdminAndUser(adminId, userId).user.setAccess(newAccess);
   };
 }
 
-
-App.getInstance().setUserAccess()
+// App.getInstance().setUserAccess();
 
 // *********************************************************
 // *********************** VALIDATOR ***********************
@@ -172,28 +218,29 @@ class Validator {
   //   CHECK IF ADMIN
   //   ********
   static isAdmin = (array, id) => {
-    const user = this.findUserById(array, id);
+    const user = this.findByIdInArray(array, id);
 
     if (user < 0) return false;
     return array[user].access === "admin";
   };
 
-  // VALIDATE IF PROVIDED ADMINID HAS ADMIN ACCESS, AND VALIDATE USER
-  static validateAdminAndUser = (adminId, userId, array) => {
-    // Checks whether supplied adminId has admin privileges,
-    // checks if supplied user exists
-    // if user exists the function returns user index
-    if (!this.isAdmin(array, adminId)) {
-      throw new Error("Invalid admin access");
-    }
-    const userIndex = this.findUserById(array, userId);
+  // OLD ADMIN AND USER VALIDATION
+  // // VALIDATE IF PROVIDED ADMINID HAS ADMIN ACCESS, AND VALIDATE USER
+  // static validateAdminAndUser = (adminId, userId, array) => {
+  //   // Checks whether supplied adminId has admin privileges,
+  //   // checks if supplied user exists
+  //   // if user exists the function returns user index
+  //   if (!this.isAdmin(array, adminId)) {
+  //     throw new Error("Invalid admin access");
+  //   }
+  //   const userIndex = this.findByIdInArray(array, userId);
 
-    if (userIndex < 0) {
-      throw new Error("User not found");
-    }
+  //   if (userIndex < 0) {
+  //     throw new Error("User not found");
+  //   }
 
-    return userIndex;
-  };
+  //   return userIndex;
+  // };
 
   // VALIDATE NEW USER OBJECT
   static ValidateUser = (userObj) => {
@@ -212,8 +259,11 @@ class Validator {
       throw new Error("Invalid User Email Provided");
     }
     // Validate Password
+    console.log(password);
     const passwordPattern =
       /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}/;
+
+    console.log(!passwordPattern.test(password));
 
     if (!passwordPattern.test(password)) {
       throw new Error("Invalid User Password Provided");
@@ -279,33 +329,38 @@ const _n = {
 const _n2 = {
   name: "test2",
   surname: "test2",
-  dob: "test2",
-  password: "test2",
-  email: "test2",
+  dob: "1/20/2022",
+  password: "asdF1asdsadf?",
+  email: "test2@gmail.com",
   access: "normal",
 };
 
 const _a = {
   name: "test1",
   surname: "test1",
-  dob: "test1",
-  password: "test1",
-  email: "test1",
+  dob: "19/12/1990",
+  password: "asdF1asdsadf?",
+  email: "test3@gmail.com",
   access: "normal",
 };
 
 const app = new App();
-app.createUser(_n, "normal");
+// console.log(app);
+// app.createUser(_n, "normal");
+// App.getInstance().createUser(_n, "normal");
+
 console.log(app);
+
+console.log("STAGE 1");
 
 const normal = new User(_n, "normal", "123");
 const normal2 = new User(_n2, "normal", "333");
 
 const admin = new User(_n, "admin", "666");
 
-app.userList.push(normal);
-app.userList.push(normal2);
-app.userList.push(admin);
+app._userList.push(normal);
+app._userList.push(normal2);
+app._userList.push(admin);
 
 app.createUser(_n, "normal");
 
@@ -317,8 +372,20 @@ console.log(app);
 
 console.log("********** START APP ACTIONS ****************");
 
-app.setUserPassword("666", "333", "NEWPASS-OVERWRITE");
+app.setUserPassword("666", "333", "asdF1asdsadf-OVERWRITE");
 app.setUserEmail("666", "333", "NEWEMAIL-OVERWRITE");
 app.setUserAccess("666", "333", "NEWACCESS-OVERWRITE");
 
 console.log(app);
+
+// console.log(app._checkAdmin("666"));
+
+const testadminuser = app._getAdminAndUser("666", "123");
+
+console.log("GETADMINUSER RESULT: ");
+console.log(testadminuser);
+console.log(typeof testadminuser);
+
+console.log(testadminuser.admin.id);
+
+// console.log(app._getAdminAndUser("666", "333"));
