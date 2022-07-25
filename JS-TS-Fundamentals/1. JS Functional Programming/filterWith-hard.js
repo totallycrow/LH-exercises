@@ -26,7 +26,9 @@ function filterWith(arr, phrase) {
   const phraseRegexp = new RegExp(givenPhrase);
 
   // MAIN SEARCH
-  return arr.filter((element) => isPhraseInObject(element, phrase, phraseRegexp));
+  return arr.filter((element) =>
+    isPhraseInObject(element, phrase, phraseRegexp)
+  );
 }
 
 // ************* HELPER FUNCTIONS *****************
@@ -40,7 +42,7 @@ const isPhraseInObject = (item, phraseRegexp) => {
     const itemValues = Object.values(item);
 
     const matchedItemValues = itemValues.filter((element) => {
-      if (typeof element === "string" || typeof element === "number" ) {
+      if (typeof element === "string" || typeof element === "number") {
         return isTwoPhrasesMaching(phraseRegexp, element);
       }
       if (Array.isArray(element)) {
@@ -65,13 +67,13 @@ const isPhraseInObject = (item, phraseRegexp) => {
     return true;
   }
 
-  return false
+  return false;
 };
 
 function isTwoPhrasesMaching(givenPhrase, itemPhrase) {
   const match = String(itemPhrase).match(phraseRegexp);
 
-  const isNotNull = match !== null
+  const isNotNull = match !== null;
   return isNotNull;
 }
 // ********************* DATA ***************************

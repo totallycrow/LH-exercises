@@ -73,6 +73,16 @@ class Group {
     this.groupContactList = [];
   }
 
+  isInGroup = (contact) => {
+    Validator.validateContact(contact);
+    console.log(contact.id);
+    console.log(this.groupContactList);
+
+    return Boolean(
+      Validator.findByIdInArray(this.groupContactList, contact.id)
+    );
+  };
+
   setName = (groupName) => {
     Validator.validateString(groupName);
     this.name = groupName;
@@ -81,6 +91,10 @@ class Group {
   addContact = (contact) => {
     // validate
     Validator.validateContact(contact);
+
+    if (this.isInGroup(contact))
+      throw new Error("Contact already exists in the group");
+
     this.groupContactList.push(contact);
   };
 
@@ -92,16 +106,6 @@ class Group {
 
     this.groupContactList = this.groupContactList.filter(
       (el) => el.id !== contact.id
-    );
-  };
-
-  isInGroup = (contact) => {
-    Validator.validateContact(contact);
-    console.log(contact.id);
-    console.log(this.groupContactList);
-
-    return Boolean(
-      Validator.findByIdInArray(this.groupContactList, contact.id)
     );
   };
 }
@@ -130,6 +134,10 @@ class AddressBook {
 
   addContactToList = (contact) => {
     Validator.validateContact(contact);
+
+    if (Validator.findByIdInArray(this.allContacts, contact.id))
+      throw new Error("Contact already in All COntacts list");
+
     this.allContacts.push(contact);
   };
 
@@ -140,7 +148,16 @@ class AddressBook {
 
   removeContactFromList = (contact) => {
     Validator.validateContact(contact);
+
+    if (!Validator.findByIdInArray(this.allContacts, contact.id))
+      throw new Error("Contact Not Found in the List");
+
     this.allContacts = this.allContacts.filter((el) => el.id !== contact.id);
+
+    // remove from groups
+    this.allGroups.forEach((group) =>
+      group.filter((el) => el.id !== contact.id)
+    );
   };
 
   modifyContact = (contact, key, newValue) => {
@@ -182,6 +199,10 @@ class AddressBook {
   //   HANDLE GROUPS
   addGroupToList = (group) => {
     Validator.validateGroup(group);
+
+    if (Validator.findByIdInArray(this.allGroups, group.id))
+      throw new Error("Group already in All Groups list");
+
     this.allGroups.push(group);
   };
 
@@ -194,6 +215,15 @@ class AddressBook {
     Validator.validateGroup(group);
     Validator.validateString(newName);
     group.setName(newName);
+  };
+
+  removeGroupFromList = (group) => {
+    Validator.validateGroup(group);
+
+    if (!Validator.findByIdInArray(this.allGroups, group.id))
+      throw new Error("Group Not Found in the List");
+
+    this.allGroups = this.allGroups.filter((el) => el.id !== group.id);
   };
 }
 
@@ -316,3 +346,7 @@ console.log(testGroup);
 
 console.log(typeof contact);
 console.log(Validator.validateContact(contact));
+
+testGroup.addContact(contact);
+console.log(testGroup);
+// testGroup.addContact(contact);
