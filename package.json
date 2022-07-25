@@ -15,5 +15,6 @@
   "bugs": {
     "url": "https://github.com/totallycrow/LH-exercises/issues"
   },
-  "homepage": "https://github.com/totallycrow/LH-exercises#readme"
+  "homepage": "https://github.com/totallycrow/LH-exercises#readme",
+  "type": "module"
 }
