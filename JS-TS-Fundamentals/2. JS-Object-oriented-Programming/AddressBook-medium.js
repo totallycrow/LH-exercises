@@ -129,6 +129,7 @@ class AddressBook {
   //   Handle contacts
 
   addContactToList = (contact) => {
+    Validator.validateContact(contact);
     this.allContacts.push(contact);
   };
 
@@ -138,10 +139,14 @@ class AddressBook {
   };
 
   removeContactFromList = (contact) => {
+    Validator.validateContact(contact);
     this.allContacts = this.allContacts.filter((el) => el.id !== contact.id);
   };
 
   modifyContact = (contact, key, newValue) => {
+    Validator.validateContact(contact);
+    Validator.validateValueType(newValue);
+
     switch (key) {
       case "name":
         contact.setName(newValue);
@@ -176,6 +181,7 @@ class AddressBook {
 
   //   HANDLE GROUPS
   addGroupToList = (group) => {
+    Validator.validateGroup(group);
     this.allGroups.push(group);
   };
 
@@ -185,6 +191,8 @@ class AddressBook {
   };
 
   setGroupName = (group, newName) => {
+    Validator.validateGroup(group);
+    Validator.validateString(newName);
     group.setName(newName);
   };
 }
@@ -238,6 +246,23 @@ class Validator {
       throw new Error("Invalid Object Type");
     }
     return true;
+  };
+
+  static validateGroup = (group) => {
+    if (!(group instanceof Group)) {
+      throw new Error("Invalid Object Type");
+    }
+    return true;
+  };
+
+  static validateValueType = (value) => {
+    if (
+      this.validateDate(value) ||
+      this.validateString(value) ||
+      this.validateEmail(value)
+    )
+      return true;
+    return false;
   };
 }
 
