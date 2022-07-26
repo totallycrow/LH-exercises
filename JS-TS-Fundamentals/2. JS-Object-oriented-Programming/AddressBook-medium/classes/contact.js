@@ -19,22 +19,21 @@ export default class Contact {
     this.modificationDate = new Date();
   }
 
-  //   setCreationDate = (newDate) => {
-  //     validateDate(newDate);
-  //     this.creationDate = newDate;
-  //   };
   setModificationDate = (newDate) => {
     validateDate(newDate);
     this.modificationDate = newDate;
   };
+
   setName = (name) => {
     Validator.validateString(name);
     this.name = name;
   };
+
   setSurname = (surname) => {
     Validator.validateString(surname);
     this.surname = surname;
   };
+
   setEmail = (email) => {
     Validator.validateEmail(email);
     this.email = email;
@@ -50,8 +49,4 @@ export default class Contact {
       .join(" ");
     return result;
   };
-
-  //   setValue = (key, value) => {
-  //     this.key = value;
-  //   };
 }

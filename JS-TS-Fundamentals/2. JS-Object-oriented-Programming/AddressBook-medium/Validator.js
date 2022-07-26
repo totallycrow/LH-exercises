@@ -1,12 +1,9 @@
-// VALIDATOR
 import Contact from "./classes/contact.js";
 import Group from "./classes/group.js";
 
 export default class Validator {
   constructor() {}
 
-  //   FIND USER BY ID
-  //   ********
   static findByIdInArray = (array, id) => {
     const lookupArray = array.slice(0);
 
@@ -32,7 +29,6 @@ export default class Validator {
 
   static validateDate = (date) => {
     const typeOfDate = Object.prototype.toString.call(date);
-    // Validate input data type and assign birth year as string
     if (typeOfDate !== "[object String]" && typeOfDate !== "[object Date]") {
       throw new Error("Incorrect input type");
     }

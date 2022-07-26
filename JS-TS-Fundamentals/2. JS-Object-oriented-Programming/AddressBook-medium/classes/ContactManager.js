@@ -43,6 +43,4 @@ export default class ContactManager {
 
     this.allContacts = this.allContacts.filter((el) => el.id !== contact.id);
   };
-
-  removeFromGroups = (contact, groupsList) => {};
 }

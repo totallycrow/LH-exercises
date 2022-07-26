@@ -22,10 +22,15 @@ class AddressBook {
   }
 
   findContactByPhrase = (phrase) => {
+    Validator.validateString();
+
+    if (phrase.length < 2) {
+      return [];
+    }
     return this.contactManager.findByPhrase(phrase);
   };
 
-  // *******CONTACTS
+  // ******* HANDLE CONTACTS *******
   addContactToList = (contact) => {
     this.contactManager.addToList(contact);
   };
@@ -37,14 +42,7 @@ class AddressBook {
   removeContactFromList = (contact) => {
     this.contactManager.removeFromList(contact);
 
-    // Garbage collection?? Remove from lists & groups to remove all references?
-
-    // remove from groups
-    // TODO FROM GROUP MANAGER
-    // this.allGroups.forEach((group) =>
-    //   group.filter((el) => el.id !== contact.id)
-    // );
-
+    // Garbage collection? Remove from lists & groups to remove all references?
     this.groupManager.removeContactFromAllGroups(contact);
   };
 
@@ -74,40 +72,20 @@ class AddressBook {
     }
   };
 
-  //   HANDLE GROUPS
+  // ******* HANDLE GROUPS *******
   addGroupToList = (group) => {
-    // Validator.validateGroup(group);
-
-    // if (Validator.findByIdInArray(this.allGroups, group.id))
-    //   throw new Error("Group already in All Groups list");
-
-    // this.allGroups.push(group);
-
     this.groupManager.addToList(group);
   };
 
   createNewGroup = (name) => {
-    // const newGroup = new Group(name);
-    // this.addGroupToList(newGroup);
     this.groupManager.createNew(name);
   };
 
   setGroupName = (group, newName) => {
-    // Validator.validateGroup(group);
-    // Validator.validateString(newName);
-    // group.setName(newName);
-
     this.groupManager.setName(group, newName);
   };
 
   removeGroupFromList = (group) => {
-    // Validator.validateGroup(group);
-
-    // if (!Validator.findByIdInArray(this.allGroups, group.id))
-    //   throw new Error("Group Not Found in the List");
-
-    // this.allGroups = this.allGroups.filter((el) => el.id !== group.id);
-
     this.GroupManager.removeFromList(group);
   };
 }
@@ -136,6 +114,12 @@ console.log(testBook.contactManager);
 testBook.addGroupToList(testGroup);
 
 console.log(testBook.groupManager);
+
+testGroup.addContact(contact);
+console.log("TEST GROUP *******", testGroup);
+
+testBook.removeContactFromList(contact);
+console.log("TEST GROUP ******* REMOVE ", testGroup);
 
 // console.log("CONTACT OBJECT");
 // console.log(contact);
@@ -171,11 +155,5 @@ console.log(testBook.groupManager);
 
 // // console.log("ALL GROUPS ^^^^", testBook.groupManager.allGroups);
 
-// // testGroup.addContact(contact);
-// // console.log("TEST GROUP *******", testGroup);
-
 // // testBook.setGroupName(testGroup, "TEST-GROUP-OVERWRITE-NAME-TEST2");
 // // console.log("TEST GROUP *******", testGroup);
-
-// testBook.removeContactFromList(contact);
-// console.log("TEST GROUP ******* REMOVE ", testGroup);

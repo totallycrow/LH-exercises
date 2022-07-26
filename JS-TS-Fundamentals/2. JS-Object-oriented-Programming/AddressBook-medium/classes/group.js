@@ -17,12 +17,8 @@ export default class Group {
 
   isInGroup = (contact) => {
     Validator.validateContact(contact);
-    console.log(contact.id);
-    console.log(this.groupContactList);
 
-    return Boolean(
-      Validator.findByIdInArray(this.groupContactList, contact.id)
-    );
+    return Validator.findByIdInArray(this.groupContactList, contact.id);
   };
 
   setName = (groupName) => {
@@ -42,8 +38,6 @@ export default class Group {
   removeContact = (contact) => {
     Validator.validateContact(contact);
 
-    // if (!Validator.findByIdInArray(this.groupContactList, contact.id))
-    //   throw new Error("User not found");
     if (!this.isInGroup) {
       throw new Error("User not found");
     }
