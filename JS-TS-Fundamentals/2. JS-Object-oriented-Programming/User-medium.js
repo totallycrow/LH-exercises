@@ -43,8 +43,6 @@ class User {
     this.access = access;
   };
 }
-// grupa lista kontatkow swoja prywatna / address book lista wszystkich /  -> osobny byt, kontakt -> / 5 klas
-
 // *********************************************************
 // *********************** APP *****************************
 // *********************************************************
@@ -82,9 +80,6 @@ class App {
 
   _getAdminAndUser(adminId, userId) {
     const clonedArray = this._userList.slice(0);
-    // CLONED ARRAY
-    console.log("GETADMINUSER");
-    console.log(clonedArray);
 
     const adminAndUser = clonedArray.reduce(
       (acc, curr, i, arr) => {
