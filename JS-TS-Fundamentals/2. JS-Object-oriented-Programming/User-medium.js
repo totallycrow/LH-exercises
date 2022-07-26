@@ -55,8 +55,8 @@ class User {
 */
 
 class App {
-  _userList = [];
-  _instance = null;
+  static _userList = [];
+  static _instance = null;
 
   constructor() {}
 
@@ -68,17 +68,22 @@ class App {
     return this._instance;
   }
 
-  createUser = (userObj, access) => {
-    let newUser = new User(userObj, access, idGenerator());
-
+  // Liscov
+  static addUser = (user) => {
+    // czy uuid nie jest zajęte
     this._userList.push(newUser);
   };
 
-  createAdmin = (userObj) => {
+  static createUser = (userObj, access) => {
+    let newUser = new User(userObj, access, idGenerator());
+    this._userList.push(newUser);
+  };
+
+  static createAdmin = (userObj) => {
     this.createUser(userObj, "admin");
   };
 
-  _getAdminAndUser(adminId, userId) {
+  static _getAdminAndUser(adminId, userId) {
     const clonedArray = this._userList.slice(0);
 
     const adminAndUser = clonedArray.reduce(
@@ -120,7 +125,7 @@ class App {
   // }
 
   //   ADMIN SET PASSWORD
-  setUserPassword = (adminId, userId, newPass) => {
+  static setUserPassword = (adminId, userId, newPass) => {
     // TODO
 
     // return user
@@ -157,7 +162,7 @@ class App {
   };
 
   //   ADMIN SET EMAIL
-  setUserEmail = (adminId, userId, newEmail) => {
+  static setUserEmail = (adminId, userId, newEmail) => {
     // OLD SOLUTION
 
     // const userIndex = Validator.validateAdminAndUser(
@@ -175,7 +180,7 @@ class App {
   };
 
   //   ADMIN SET ACCESS
-  setUserAccess = (adminId, userId, newAccess) => {
+  static setUserAccess = (adminId, userId, newAccess) => {
     // const user = Validator.validateAdminAndUser(
     //   adminId,
     //   userId,

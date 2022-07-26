@@ -39,9 +39,18 @@ class AddressBook {
     this.contactManager.createNew(contactObject);
   };
 
-  removeContactFromList = (contact) => {
-    this.contactManager.removeFromList(contact);
+  removeContactFromList = (contactId) => {
+    this.contactManager.removeFromList(contactId);
+    // Garbage collection? Remove from lists & groups to remove all references?
+    this.groupManager.removeContactFromAllGroups(contact);
+  };
 
+  addContactToGroup(contactId, groupId) {
+    this.contactManager.removeFromList(contactId);
+  }
+
+  removeContactFromGroup = (contactId) => {
+    this.contactManager.removeFromList(contactId);
     // Garbage collection? Remove from lists & groups to remove all references?
     this.groupManager.removeContactFromAllGroups(contact);
   };
@@ -120,6 +129,16 @@ console.log("TEST GROUP *******", testGroup);
 
 testBook.removeContactFromList(contact);
 console.log("TEST GROUP ******* REMOVE ", testGroup);
+
+// 1. testing AddressBook
+// - zostało dodanych kolku ludzi
+// - potem zostali przypisani do jakiejś grupy
+// - potem ktoś dołączył do drugiej grupy
+// - ktoś przeszedł z jednej grupy do drugiej
+// - ktoś został usunięty
+
+// happy path / falsy
+// BDD
 
 // console.log("CONTACT OBJECT");
 // console.log(contact);

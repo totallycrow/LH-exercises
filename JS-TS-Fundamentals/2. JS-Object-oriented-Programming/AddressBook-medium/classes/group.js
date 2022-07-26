@@ -26,13 +26,13 @@ export default class Group {
     this.name = groupName;
   };
 
-  addContact = (contact) => {
-    Validator.validateContact(contact);
+  addContact = (contactId) => {
+    Validator.validateContact(contactId);
 
-    if (this.isInGroup(contact))
+    if (this.isInGroup(contactId))
       throw new Error("Contact already exists in the group");
 
-    this.groupContactList.push(contact);
+    this.groupContactList.push(contactId);
   };
 
   removeContact = (contact) => {
