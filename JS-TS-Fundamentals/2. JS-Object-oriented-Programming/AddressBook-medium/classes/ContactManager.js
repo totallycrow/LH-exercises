@@ -6,8 +6,17 @@ export default class ContactManager {
     this.allContacts = [];
   }
 
+  isInList = (contact) => {
+    Validator.validateContact(contact);
+    console.log(contact.id);
+    console.log(this.groupContactList);
+
+    return Boolean(Validator.findByIdInArray(this.allContacts, contact.id));
+  };
+
   findByPhrase = (phrase) => {
     Validator.validateString(phrase);
+
     const result = this.allContacts.filter((el) =>
       el.toString().toUpperCase().includes(phrase.toUpperCase())
     );
@@ -15,6 +24,9 @@ export default class ContactManager {
   };
 
   addToList = (contact) => {
+    if (this.isInList(contact)) {
+      throw new Error("Contact already in the list!");
+    }
     Utilities.addItemToArray(contact, this.allContacts);
   };
 

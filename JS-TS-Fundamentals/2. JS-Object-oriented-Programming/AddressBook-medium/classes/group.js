@@ -1,9 +1,9 @@
+import Validator from "../Validator.js";
+import Utilities from "../Utilities.js";
+
 // *********************************************************
 // *********************** GROUP ****************************
 // *********************************************************
-
-import Validator from "../Validator.js";
-import Utilities from "../Utilities.js";
 
 export default class Group {
   // Ma mieć: listę kontaktów oraz nazwę grupy oraz uuid
@@ -31,7 +31,6 @@ export default class Group {
   };
 
   addContact = (contact) => {
-    // validate
     Validator.validateContact(contact);
 
     if (this.isInGroup(contact))
@@ -43,8 +42,11 @@ export default class Group {
   removeContact = (contact) => {
     Validator.validateContact(contact);
 
-    if (!Validator.findByIdInArray(this.groupContactList, contact.id))
+    // if (!Validator.findByIdInArray(this.groupContactList, contact.id))
+    //   throw new Error("User not found");
+    if (!this.isInGroup) {
       throw new Error("User not found");
+    }
 
     this.groupContactList = this.groupContactList.filter(
       (el) => el.id !== contact.id
