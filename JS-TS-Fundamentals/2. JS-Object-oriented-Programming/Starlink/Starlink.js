@@ -12,14 +12,6 @@ import Validator from "../Validator";
 //   list of single satellites
 //   list of groups of satellites
 
-class Satelite {
-  // Ma miec: uuid, wysokość, współrzędne, status żagla słonecznego(on/off), status nadawania sygnału(on/off), status włączenia satelity
-}
-
-class GroupOfSatelites {
-  // Zawiera ewidencję satelit które znajdują się w grupie
-}
-
 class Operator {
   // Ma miec: imie, nazwisko, uuid
   // Ma umożliwiać:

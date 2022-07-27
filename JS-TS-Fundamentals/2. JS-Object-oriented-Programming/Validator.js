@@ -86,4 +86,15 @@ export default class Validator {
       throw new Error("Coordinates must be a valid object");
     }
   };
+
+  static validateOnOff = (status) => {
+    if (typeof status !== "string") {
+      throw new Error("Invalid status type");
+    }
+
+    if (status === "off" || status === "on") {
+      return true;
+    }
+    throw new Error("Invalid status value");
+  };
 }
