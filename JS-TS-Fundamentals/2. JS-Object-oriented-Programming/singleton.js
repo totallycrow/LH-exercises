@@ -10,7 +10,7 @@ class ABC {
   }
 
   hello() {
-    console.log("hehe");
+    console.log("test");
   }
 }
 
