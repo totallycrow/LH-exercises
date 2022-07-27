@@ -17,15 +17,14 @@ export default class Location {
     Validator.validateCooridnatesObject(coordinates);
     this.coordinates = coordinates;
   };
+
+  setCoordinateX = (coordinate) => {
+    Validator.validateString(coordinate);
+    this.coordinates.x = coordinate;
+  };
+
+  setCoordinateY = (coordinate) => {
+    Validator.validateString(coordinate);
+    this.coordinates.y = coordinate;
+  };
 }
-
-// TEST
-
-const testLoc = new Location(1200, { x: "150.2", y: "121.35" });
-
-console.log(testLoc);
-testLoc.setHeight(5);
-console.log(testLoc);
-
-testLoc.setCoordinates({ x: "650.2", y: "621.35" });
-console.log(testLoc);
