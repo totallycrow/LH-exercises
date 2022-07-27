@@ -5,6 +5,13 @@
 // opertator
 // Overlord - big boss z uprawnieniami administratora
 
+import Validator from "../Validator";
+
+// Location Class
+// Satelites Handlers
+//   list of single satellites
+//   list of groups of satellites
+
 class Satelite {
   // Ma miec: uuid, wysokość, współrzędne, status żagla słonecznego(on/off), status nadawania sygnału(on/off), status włączenia satelity
 }

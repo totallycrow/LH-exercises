@@ -1,6 +1,6 @@
 import Validator from "../../Validator.js";
 
-class Location {
+export default class Location {
   constructor(height, coordinates = { x: "", y: "" }) {
     Validator.validateInt(height);
     Validator.validateCooridnatesObject(coordinates);
