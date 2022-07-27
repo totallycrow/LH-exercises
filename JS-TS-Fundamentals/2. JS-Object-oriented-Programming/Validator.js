@@ -1,5 +1,6 @@
 import Contact from "./AddressBook-medium/classes/contact.js";
 import Group from "./AddressBook-medium/classes/group.js";
+import Satellite from "./Starlink/classes/Satellite.js";
 
 export default class Validator {
   constructor() {}
@@ -8,6 +9,14 @@ export default class Validator {
     const lookupArray = array.slice(0);
 
     const resultIndex = lookupArray.findIndex((el) => el.id === id);
+    if (resultIndex >= 0) return true;
+    return false;
+  };
+
+  static findByIdInArrayOfIds = (array, id) => {
+    const lookupArray = array.slice(0);
+
+    const resultIndex = lookupArray.findIndex((el) => el === id);
     if (resultIndex >= 0) return true;
     return false;
   };
@@ -96,5 +105,10 @@ export default class Validator {
       return true;
     }
     throw new Error("Invalid status value");
+  };
+
+  static validateSatellite = (satellite) => {
+    if (satellite instanceof Satellite) return true;
+    throw new Error("Invalid Satellite");
   };
 }
