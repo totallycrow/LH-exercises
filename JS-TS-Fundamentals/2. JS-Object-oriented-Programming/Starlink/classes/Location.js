@@ -9,7 +9,7 @@ export default class Location {
     this.coordinates = coordinates;
   }
 
-  setHeight = (height) => {
+  setLocationHeight = (height) => {
     Validator.validateInt(height);
     this.height = height;
   };

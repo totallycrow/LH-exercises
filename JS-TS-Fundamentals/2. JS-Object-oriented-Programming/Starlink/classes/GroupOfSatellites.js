@@ -1,5 +1,6 @@
 import Validator from "../../Validator.js";
 import Utilities from "../../Utilities.js";
+import Satellite from "./Satellite.js";
 
 export default class GroupOfSatellites {
   // Zawiera ewidencję satelit które znajdują się w grupie
@@ -16,16 +17,16 @@ export default class GroupOfSatellites {
     this.groupName = name;
   };
 
-  addSatelliteToGroup = (satellite) => {
-    Validator.validateSatellite(satellite);
+  addToGroup = (satelliteId) => {
+    Validator.validateString(satelliteId);
 
-    if (Validator.findByIdInArray(this.satellitesList, satellite.id)) {
+    if (Validator.findByIdInArrayOfIds(this.satellitesList, satelliteId)) {
       throw "Satellite already exists in the group";
     }
-    this.satellitesList.push(satellite.id);
+    this.satellitesList.push(satelliteId);
   };
 
-  removeSatelliteFromGroup = (satellite) => {
+  removeFromGroup = (satellite) => {
     Validator.validateSatellite(satellite);
 
     if (!Validator.findByIdInArrayOfIds(this.satellitesList, satellite.id)) {
@@ -36,6 +37,12 @@ export default class GroupOfSatellites {
     );
   };
 
-  //   ADD SATELLITE TO GROUP
-  //   REMOVE SATELLITE FROM GROUP
+  getGroupSatellitesList = () => {
+    return this.satellitesList;
+  };
+
+  isSatelliteIdInGroup = (satelliteId) => {
+    Validator.validateSatellite(satellite);
+    return this.satellitesList.some((el) => el === satelliteId);
+  };
 }

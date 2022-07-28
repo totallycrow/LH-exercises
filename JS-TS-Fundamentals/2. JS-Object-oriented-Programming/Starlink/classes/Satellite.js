@@ -31,4 +31,23 @@ export default class Satellite {
     Validator.validateOnOff(status);
     this.poweredStatus = status;
   };
+
+  setHeight = (height) => {
+    Validator.validateInt(height);
+    this.location.setLocationHeight(height);
+  };
+  setCoordinates = (coordinates) => {
+    Validator.validateCooridnatesObject(coordinates);
+    this.location.coordinates = coordinates;
+  };
+
+  setCoordinateX = (coordinate) => {
+    Validator.validateString(coordinate);
+    this.location.coordinates.x = coordinate;
+  };
+
+  setCoordinateY = (coordinate) => {
+    Validator.validateString(coordinate);
+    this.location.coordinates.y = coordinate;
+  };
 }

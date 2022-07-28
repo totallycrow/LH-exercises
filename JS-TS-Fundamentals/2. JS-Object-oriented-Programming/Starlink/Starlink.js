@@ -12,16 +12,6 @@ import Validator from "../Validator";
 //   list of single satellites
 //   list of groups of satellites
 
-class Operator {
-  // Ma miec: imie, nazwisko, uuid
-  // Ma umożliwiać:
-  // - zmianę wysokości i wpółrzędnych pojedynczych satelit
-  // - zmianę wysokości i wpółrzędnychcałej grupy
-  // - otwieranie i składanie żagli słonecznych dla pojedynczego egzemplarza jak i całej grupy
-  // - właczanie i wyłączanie sygnału nadawczego dla pojedynczych satelit oraz grup
-  // - może tworzyć nowe grupy
-}
-
 class Overlord {
   // Ma mieć: imie, nazwisko, uuid
   // Ma umożliwiać:
