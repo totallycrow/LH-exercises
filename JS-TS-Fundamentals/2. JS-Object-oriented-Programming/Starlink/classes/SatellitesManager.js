@@ -38,7 +38,15 @@ export default class SatellitesManager {
   };
 
   setCoordinates = (satelliteId, newCoordinates) => {
-    this.findSatellite(satelliteId).coordinates = newCoordinates;
+    this.findSatellite(satelliteId).location.setCoordinates(newCoordinates);
+  };
+
+  setSailStatus = (satelliteId, status) => {
+    this.findSatellite(satelliteId).setSolarSailStatus(status);
+  };
+
+  setEmitterStatus = (satelliteId, status) => {
+    this.findSatellite(satelliteId).setSignalEmitterStatus(status);
   };
 
   //   TODO TURN OFF

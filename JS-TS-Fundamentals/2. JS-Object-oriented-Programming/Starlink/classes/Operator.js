@@ -27,6 +27,22 @@ export default class Operator {
     this.satellitesManager.setCoordinates(satelliteId, newCoordinates);
   };
 
+  setIndividualSatelliteSailStatus = (satelliteId, newStatus) => {
+    this.satellitesManager.setSailStatus(satelliteId, newStatus);
+  };
+
+  setIndividualSatelliteEmitterStatus = (satelliteId, newStatus) => {
+    this.satellitesManager.setEmitterStatus(satelliteId, newStatus);
+  };
+
+  // setSailStatus = (status) => {
+  //   this.findSatellite(satelliteId).setSolarSailStatus(status);
+  // };
+
+  // setEmitterStatus = (status) => {
+  //   this.findSatellite(satelliteId).setSignalEmitterStatus(status);
+  // };
+
   createNewGroup = (name) => {
     return this.groupManager.createNewSatelliteGroup(name);
   };
@@ -138,5 +154,8 @@ operator.setSatelliteGroupSignalEmitterStatus(
 
 const group2 = operator.createNewGroup("testgroup2");
 operator.removeGroup(group2.id);
+
+operator.setIndividualSatelliteSailStatus(testSat.id, "off");
+operator.setIndividualSatelliteEmitterStatus(testSat.id, "off");
 
 console.log(operator.satellitesManager.findSatellite(testSat.id));
