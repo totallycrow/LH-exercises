@@ -1,6 +1,5 @@
 import Validator from "../../Validator.js";
 import GroupOfSatellites from "./GroupOfSatellites.js";
-import Satellite from "./Satellite.js";
 
 export default class GroupManager {
   constructor() {
@@ -8,7 +7,6 @@ export default class GroupManager {
   }
   static _instance;
 
-  //   TypeError: Class constructor GroupManager cannot be invoked without 'new'
   static getInstance() {
     if (this._instance === undefined) {
       this._instance = new GroupManager();
@@ -28,18 +26,15 @@ export default class GroupManager {
     return group.getGroupSatellitesList();
   };
 
+  // ********** MANAGE GROUPS **********
+
   addSatelliteIdToGroup = (satelliteId, groupId) => {
     Validator.validateString(satelliteId);
 
-    // find group by id
     const groupToAdd = this.allSatellitesGroups.find((el) => el.id === groupId);
     console.log("GROUP TO ADD", groupToAdd);
     groupToAdd.addToGroup(satelliteId);
   };
-
-  // ********** MANAGE GROUPS **********
-
-  //   GROUPS HANDLING
 
   createNewSatelliteGroup = (name) => {
     Validator.validateString(name);
@@ -56,12 +51,7 @@ export default class GroupManager {
     );
   };
 
-  //   todo
-  static removeContactFromGroups = (first) => {};
-
   setGroupProperty = (allSatellitesList, key, groupId, newValue) => {
-    // validate properties
-    // todo
     const satelliteIds = this.getSatelliteIdsInGroup(groupId);
     const satelliteListClone = allSatellitesList.slice(0);
 

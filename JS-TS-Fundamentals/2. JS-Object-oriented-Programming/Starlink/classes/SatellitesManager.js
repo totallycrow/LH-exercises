@@ -49,6 +49,10 @@ export default class SatellitesManager {
     this.findSatellite(satelliteId).setSignalEmitterStatus(status);
   };
 
+  setOnOffStatus = (satelliteId, status) => {
+    this.findSatellite(satelliteId).setPoweredStatus(status);
+  };
+
   //   TODO TURN OFF
 
   turnOffAllSatellites = () => {

@@ -1,6 +1,5 @@
 import Satellite from "./Satellite.js";
 import SatellitesManager from "./SatellitesManager.js";
-import GroupOfSatellites from "./GroupOfSatellites.js";
 import GroupManager from "./GroupManager.js";
 import Utilities from "../../Utilities.js";
 
@@ -19,6 +18,11 @@ export default class Operator {
     this.name = name;
     this.surname = surname;
   }
+
+  // **************************************************
+  // ********** MANAGE INDIVIDUAL SATELLITES **********
+  // **************************************************
+
   setIndividualSatelliteHeight = (satelliteId, newHeight) => {
     this.satellitesManager.setHeight(satelliteId, newHeight);
   };
@@ -35,13 +39,9 @@ export default class Operator {
     this.satellitesManager.setEmitterStatus(satelliteId, newStatus);
   };
 
-  // setSailStatus = (status) => {
-  //   this.findSatellite(satelliteId).setSolarSailStatus(status);
-  // };
-
-  // setEmitterStatus = (status) => {
-  //   this.findSatellite(satelliteId).setSignalEmitterStatus(status);
-  // };
+  // *************************************************
+  // ********** MANAGE GROUPS OF SATELLITES **********
+  // *************************************************
 
   createNewGroup = (name) => {
     return this.groupManager.createNewSatelliteGroup(name);
@@ -96,9 +96,10 @@ export default class Operator {
   };
 }
 
-//
-//
-//
+// *********************** TEST **************************
+//// *************************************************
+//// *************************************************
+//// *************************************************
 const testSat = new Satellite({
   height: 120,
   coordinates: { x: "15.5", y: "100.55" },

@@ -1,6 +1,5 @@
 import Validator from "../../Validator.js";
 import Utilities from "../../Utilities.js";
-import Satellite from "./Satellite.js";
 
 export default class GroupOfSatellites {
   // Zawiera ewidencję satelit które znajdują się w grupie
@@ -11,7 +10,6 @@ export default class GroupOfSatellites {
     this.satellitesList = [];
   }
 
-  //   RENAME GROUP
   setGroupName = (name) => {
     Validator.validateString(name);
     this.groupName = name;
