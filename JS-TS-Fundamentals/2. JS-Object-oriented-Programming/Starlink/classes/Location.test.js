@@ -5,16 +5,16 @@ describe("Location", () => {
   const testLoc = new Location(1200, { x: "150.2", y: "121.35" });
 
   test("Confirms setHeight() is a function", () => {
-    expect(typeof testLoc.setHeight).toEqual("function");
+    expect(typeof testLoc.setLocationHeight).toEqual("function");
   });
 
   test("Location height is changed to 5", () => {
-    testLoc.setHeight(5);
+    testLoc.setLocationHeight(5);
     expect(testLoc.height).toBe(5);
   });
 
   test("Location height is changed to 1200", () => {
-    testLoc.setHeight(1200);
+    testLoc.setLocationHeight(1200);
     expect(testLoc.height).toBe(1200);
   });
 

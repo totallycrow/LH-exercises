@@ -111,4 +111,10 @@ export default class Validator {
     if (satellite instanceof Satellite) return true;
     throw new Error("Invalid Satellite");
   };
+
+  static validateArray = (el) => {
+    if (!Array.isArray(el) || el.length <= 0) {
+      throw new Error("Invalid array");
+    }
+  };
 }

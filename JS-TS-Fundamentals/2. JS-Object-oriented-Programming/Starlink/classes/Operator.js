@@ -100,63 +100,63 @@ export default class Operator {
 //// *************************************************
 //// *************************************************
 //// *************************************************
-const testSat = new Satellite({
-  height: 120,
-  coordinates: { x: "15.5", y: "100.55" },
-});
+// const testSat = new Satellite({
+//   height: 120,
+//   coordinates: { x: "15.5", y: "100.55" },
+// });
 
-const operator = new Operator("John", "Doe");
+// const operator = new Operator("John", "Doe");
 
-const testGroup = operator.groupManager.createNewSatelliteGroup("Test-Group1");
+// const testGroup = operator.groupManager.createNewSatelliteGroup("Test-Group1");
 
-console.log(operator.groupManager.getSatellitesGroups());
+// console.log(operator.groupManager.getSatellitesGroups());
 
-console.log(operator);
+// console.log(operator);
 
-operator.satellitesManager.addSattelliteToList(testSat);
+// operator.satellitesManager.addSattelliteToList(testSat);
 
-operator.groupManager.addSatelliteIdToGroup(testSat.id, testGroup.id);
+// operator.groupManager.addSatelliteIdToGroup(testSat.id, testGroup.id);
 
-// console.log(operator.satellitesManager.allSatellitesList);
+// // console.log(operator.satellitesManager.allSatellitesList);
 
-console.log(operator.setIndividualSatelliteHeight(testSat.id, 1520));
-console.log(
-  operator.setIndividualSatelliteCoordinates(testSat.id, {
-    x: "5123.1",
-    y: "3333.33",
-  })
-);
+// console.log(operator.setIndividualSatelliteHeight(testSat.id, 1520));
+// console.log(
+//   operator.setIndividualSatelliteCoordinates(testSat.id, {
+//     x: "5123.1",
+//     y: "3333.33",
+//   })
+// );
 
-console.log(operator.satellitesManager.findSatellite(testSat.id));
+// console.log(operator.satellitesManager.findSatellite(testSat.id));
 
-operator.setSatelliteGroupHeight(
-  operator.satellitesManager.getSatellitesList(),
-  testGroup.id,
-  999.99
-);
+// operator.setSatelliteGroupHeight(
+//   operator.satellitesManager.getSatellitesList(),
+//   testGroup.id,
+//   999.99
+// );
 
-operator.setSatelliteGroupCoordinates(
-  operator.satellitesManager.getSatellitesList(),
-  testGroup.id,
-  { x: "995.55", y: "559.99" }
-);
+// operator.setSatelliteGroupCoordinates(
+//   operator.satellitesManager.getSatellitesList(),
+//   testGroup.id,
+//   { x: "995.55", y: "559.99" }
+// );
 
-operator.setSatelliteGroupSailsStatus(
-  operator.satellitesManager.getSatellitesList(),
-  testGroup.id,
-  "on"
-);
+// operator.setSatelliteGroupSailsStatus(
+//   operator.satellitesManager.getSatellitesList(),
+//   testGroup.id,
+//   "on"
+// );
 
-operator.setSatelliteGroupSignalEmitterStatus(
-  operator.satellitesManager.getSatellitesList(),
-  testGroup.id,
-  "on"
-);
+// operator.setSatelliteGroupSignalEmitterStatus(
+//   operator.satellitesManager.getSatellitesList(),
+//   testGroup.id,
+//   "on"
+// );
 
-const group2 = operator.createNewGroup("testgroup2");
-operator.removeGroup(group2.id);
+// const group2 = operator.createNewGroup("testgroup2");
+// operator.removeGroup(group2.id);
 
-operator.setIndividualSatelliteSailStatus(testSat.id, "off");
-operator.setIndividualSatelliteEmitterStatus(testSat.id, "off");
+// operator.setIndividualSatelliteSailStatus(testSat.id, "off");
+// operator.setIndividualSatelliteEmitterStatus(testSat.id, "off");
 
-console.log(operator.satellitesManager.findSatellite(testSat.id));
+// console.log(operator.satellitesManager.findSatellite(testSat.id));

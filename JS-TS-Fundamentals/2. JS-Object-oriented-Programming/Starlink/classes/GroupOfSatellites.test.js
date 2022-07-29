@@ -1,7 +1,7 @@
 import GroupOfSatellites from "./GroupOfSatellites.js";
 import Satellite from "./Satellite.js";
 
-describe("Location", () => {
+describe("Group of Satellites", () => {
   const testGroup = new GroupOfSatellites("TestGroup");
   const testSat = new Satellite({
     height: 650,
@@ -18,21 +18,20 @@ describe("Location", () => {
   });
 
   test("A new satellite is added to the group", () => {
-    testGroup.addSatelliteToGroup(testSat);
+    testGroup.addToGroup(testSat.id);
     console.log(testGroup.satellitesList);
     expect(testGroup.satellitesList.length).toBe(1);
     expect(testGroup.satellitesList[0]).toBe(testSat.id);
   });
 
-  // Received function did not throw
-  // test("Satellite already exisiting in the group list can't be added", () => {
-  //   expect(() => testGroup.addSatelliteToGroup(testSat)).toThrow(
-  //     "Satellite already exists in the group"
-  //   );
-  // });
+  test("Satellite already exisiting in the group list can't be added", () => {
+    expect(() => testGroup.addToGroup(testSat.id)).toThrow(
+      "Satellite already exists in the group"
+    );
+  });
 
   test("An existing satellite is removed from the group", () => {
-    testGroup.removeSatelliteFromGroup(testSat);
+    testGroup.removeFromGroup(testSat);
     console.log(testGroup.satellitesList);
     expect(testGroup.satellitesList.length).toBe(0);
   });

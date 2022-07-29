@@ -30,8 +30,14 @@ export default class GroupManager {
 
   addSatelliteIdToGroup = (satelliteId, groupId) => {
     Validator.validateString(satelliteId);
+    Validator.validateString(satelliteId);
 
     const groupToAdd = this.allSatellitesGroups.find((el) => el.id === groupId);
+
+    if (groupToAdd === "undefined") {
+      throw new Error("Group not found");
+    }
+
     console.log("GROUP TO ADD", groupToAdd);
     groupToAdd.addToGroup(satelliteId);
   };
@@ -52,6 +58,14 @@ export default class GroupManager {
   };
 
   setGroupProperty = (allSatellitesList, key, groupId, newValue) => {
+    Validator.validateArray(allSatellitesList);
+    Validator.validateString(key);
+    Validator.validateString(groupId);
+
+    if (typeof newValue !== "string" && typeof newValue !== "number") {
+      throw new Error("Invalid new value");
+    }
+
     const satelliteIds = this.getSatelliteIdsInGroup(groupId);
     const satelliteListClone = allSatellitesList.slice(0);
 

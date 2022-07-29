@@ -30,23 +30,23 @@ export default class Overlord extends Operator {
 // *************************************************
 // *************************************************
 
-const overlord = new Overlord("Bob", "Blake");
-const satId = overlord.satellitesManager.allSatellitesList[0].id;
+// const overlord = new Overlord("Bob", "Blake");
+// const satId = overlord.satellitesManager.allSatellitesList[0].id;
 
-console.log(overlord);
+// console.log(overlord);
 
-console.log(overlord.satellitesManager.allSatellitesList);
+// console.log(overlord.satellitesManager.allSatellitesList);
 
-const overGroup = overlord.createNewGroup("OVERGROUP");
+// const overGroup = overlord.createNewGroup("OVERGROUP");
 
-overlord.groupShutDown(overGroup.id);
+// overlord.groupShutDown(overGroup.id);
 
-console.log(overlord.groupManager.getSatellitesGroups());
+// console.log(overlord.groupManager.getSatellitesGroups());
 
-overlord.systemPowerOn();
-console.log(overlord.satellitesManager.allSatellitesList);
-// overlord.systemShutDown();
+// overlord.systemPowerOn();
+// console.log(overlord.satellitesManager.allSatellitesList);
+// // overlord.systemShutDown();
 
-overlord.setIndividualSatellitePowerStatus(satId, "off");
+// overlord.setIndividualSatellitePowerStatus(satId, "off");
 
-console.log(overlord.satellitesManager.allSatellitesList[0]);
+// console.log(overlord.satellitesManager.allSatellitesList[0]);

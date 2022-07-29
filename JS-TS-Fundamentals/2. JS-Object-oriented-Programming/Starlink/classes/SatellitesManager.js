@@ -1,15 +1,11 @@
 import Validator from "../../Validator.js";
-import Utilities from "../../Utilities.js";
-import GroupOfSatellites from "./GroupOfSatellites.js";
 import Satellite from "./Satellite.js";
 
 export default class SatellitesManager {
   constructor() {
-    this.allSatellitesGroups = [];
     this.allSatellitesList = [];
   }
 
-  //   TypeError: Class constructor SatellitesManager cannot be invoked without 'new'
   static _instance;
 
   static getInstance() {
@@ -21,17 +17,18 @@ export default class SatellitesManager {
   }
 
   // ********** GETTERS **********
-  //   getSatellitesGroups = () => {
-  //     return this.allSatellitesGroups;
-  //   };
 
   getSatellitesList = () => {
     return this.allSatellitesList;
   };
 
   findSatellite = (satelliteId) => {
+    Validator.validateString(satelliteId);
     return this.allSatellitesList.find((el) => el.id === satelliteId);
   };
+
+  // ********** MANAGEMENT **********
+  // SETTERS
 
   setHeight = (satelliteId, newHeight) => {
     this.findSatellite(satelliteId).setHeight(newHeight);
@@ -53,8 +50,6 @@ export default class SatellitesManager {
     this.findSatellite(satelliteId).setPoweredStatus(status);
   };
 
-  //   TODO TURN OFF
-
   turnOffAllSatellites = () => {
     this.getSatellitesList().forEach((sat) => sat.setPoweredStatus("off"));
   };
@@ -63,15 +58,7 @@ export default class SatellitesManager {
     this.getSatellitesList().forEach((sat) => sat.setPoweredStatus("on"));
   };
 
-  //   getSatelliteIdsInGroup = (groupId) => {
-  //     const group = this.allSatellitesGroups.find((el) => el.id === groupId);
-  //     console.log("TEST", group);
-  //     return group.getGroupSatellitesList();
-  //   };
-
-  // ********** MANAGE METHODS **********
-
-  // ********** MANAGE SATELLITES **********
+  // MANAGEMENT
 
   createNewSatellite = (locationObj) => {
     Validator.validateInt(locationObj.height);
@@ -89,7 +76,17 @@ export default class SatellitesManager {
     this.allSatellitesList = [...this.allSatellitesList, satellite];
   };
 
-  removeSatelliteFromList = (satellite) => {
+  removeSatelliteFromAllGroups = (satId, allGroups) => {
+    const clone = allGroups.slice(0);
+
+    clone.forEach((el) => {
+      if (el.isSatelliteIdInGroup(satId)) {
+        el.removeFromGroup(satId);
+      }
+    });
+  };
+
+  removeSatelliteFromList = (satellite, allGroups) => {
     Validator.validateSatellite(satellite);
 
     if (!Validator.findByIdInArrayOfIds(this.allSatellitesList, satellite.id)) {
@@ -98,52 +95,24 @@ export default class SatellitesManager {
     this.allSatellitesList = this.allSatellitesList.filter(
       (el) => el.id !== satellite.id
     );
+    this.removeSatelliteFromAllGroups(satellite.id, allGroups);
   };
 
-  //   Add satellite to group
-  // remove
+  addSatelliteToGroup = (satellite, groupId, groupList) => {
+    Validator.validateSatellite(satellite);
 
-  //   addSatelliteToGroup = (satellite, groupId) => {
-  //     Validator.validateSatellite(satellite);
-
-  //     // find group by id
-  //     const groupToAdd = this.allSatellitesGroups.find((el) => el.id === groupId);
-  //     console.log("GROUP TO ADD", groupToAdd);
-  //     groupToAdd.addToGroup(satellite);
-  //   };
-
-  //   REMOVE SATELLITE FROM GROUP
-
-  // ********** MANAGE GROUPS **********
-
-  //   GROUPS HANDLING
-
-  createNewSatelliteGroup = (name) => {
-    Validator.validateString(name);
-    const newGroup = new GroupOfSatellites(name);
-    this.allSatellitesGroups.push(newGroup);
+    // find group by id
+    const groupToAdd = groupList.find((el) => el.id === groupId);
+    console.log("GROUP TO ADD", groupToAdd);
+    groupToAdd.addToGroup(satellite.id);
   };
 
-  setGroupHeight = (groupId, height) => {
-    // find satellites in group id
-    const satelliteIdsToFind = this.allSatellitesGroups.find(
-      (el) => el.id === groupId
-    );
-    console.log(satelliteIdsToFind);
-  };
-  setGroupCoordinates = (coordinates) => {
-    Validator.validateCooridnatesObject(coordinates);
-    this.location.coordinates = coordinates;
-  };
+  removeSatelliteFromGroup = (satellite, groupId, groupList) => {
+    Validator.validateSatellite(satellite);
 
-  setGroupCoordinateX = (coordinate) => {
-    Validator.validateString(coordinate);
-    this.location.coordinates.x = coordinate;
-  };
-
-  setGroupCoordinateY = (coordinate) => {
-    Validator.validateString(coordinate);
-    this.location.coordinates.y = coordinate;
+    // find group by id
+    const groupToRemoveFrom = groupList.find((el) => el.id === groupId);
+    groupToRemoveFrom.removeFromGroup(satellite);
   };
 }
 

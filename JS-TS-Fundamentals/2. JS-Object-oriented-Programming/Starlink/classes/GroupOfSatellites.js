@@ -40,7 +40,8 @@ export default class GroupOfSatellites {
   };
 
   isSatelliteIdInGroup = (satelliteId) => {
-    Validator.validateSatellite(satellite);
+    Validator.validateString(satelliteId);
+    // Validator.validateSatellite(satellite);
     return this.satellitesList.some((el) => el === satelliteId);
   };
 }
