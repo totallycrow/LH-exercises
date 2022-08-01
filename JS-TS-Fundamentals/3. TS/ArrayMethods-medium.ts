@@ -66,7 +66,6 @@ const reduceFn = (array: validArray, callback: Function, initial? : unknown) => 
   const initialValueType = Object.prototype.toString.call(initial);
 
   if (array.length === 0 && initialValueType === "[object Undefined]") {
-    console.log("returned false");
     throw new TypeError("Reduce of empty array with no initial value");
   }
 
