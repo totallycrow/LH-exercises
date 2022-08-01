@@ -18,9 +18,12 @@ const inputData = [
 
 type indexAndValue = [number, string];
 
-const findPhraseInArray = (array: string[], phrase: string) : indexAndValue | string => {
-  if (array.length <= 0) {
-    throw new Error("Empty array provided")
+const findPhraseInArray = (
+  array: string[],
+  phrase: string
+): indexAndValue | string => {
+  if (array.length === 0) {
+    throw new Error("Empty array provided");
   }
 
   const clonedArray = array.slice(0);
@@ -31,7 +34,7 @@ const findPhraseInArray = (array: string[], phrase: string) : indexAndValue | st
     if (el.toLowerCase() === phrase.toLowerCase()) {
       foundIndex = index;
       return true;
-    } else return false
+    } else return false;
   });
 
   if (result) {

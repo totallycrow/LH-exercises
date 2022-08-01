@@ -17,7 +17,7 @@ const inputData = [
     "nodeJS",
 ];
 const findPhraseInArray = (array, phrase) => {
-    if (array.length <= 0) {
+    if (array.length === 0) {
         throw new Error("Empty array provided");
     }
     const clonedArray = array.slice(0);

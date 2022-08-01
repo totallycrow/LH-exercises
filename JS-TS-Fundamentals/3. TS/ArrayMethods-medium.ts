@@ -1,8 +1,7 @@
-type validArray = unknown[]
+type validArray = unknown[];
 
 // **************** FOREACH *******************
-const forEachFn = (array: validArray, callback: Function) : void => {
-
+const forEachFn = (array: validArray, callback: Function): void => {
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
 
@@ -16,21 +15,20 @@ const forEachFn = (array: validArray, callback: Function) : void => {
 // ****************** MAP *****************
 // const mapFn = (array: validArray, callback: Function) => {
 
-function mapFn<T>(array: Array<T>, callback: Function) {
+function mapFn<T>(array: Array<T>, callback: Function): validArray {
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
   let mappedArray = [];
 
   for (let i = 0; i < arrayLength; i++) {
-    const output = callback(clonedArray[i])
+    const output = callback(clonedArray[i]);
     mappedArray.push(output);
   }
   return mappedArray;
-};
+}
 
 // **************** ENTRIES ****************
-const entriesFn = (array: validArray) : validArray => {
-  
+const entriesFn = (array: validArray): validArray => {
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
   let entries = [];
@@ -43,8 +41,7 @@ const entriesFn = (array: validArray) : validArray => {
 };
 
 // ***************** FILTER **************
-const filterFn = (array: validArray, callback: Function) : validArray=> {
-
+const filterFn = (array: validArray, callback: Function): validArray => {
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
   let filteredArray = [];
@@ -60,7 +57,7 @@ const filterFn = (array: validArray, callback: Function) : validArray=> {
 };
 
 // ****************** REDUCE ************
-const reduceFn = (array: validArray, callback: Function, initial? : unknown) => {
+const reduceFn = (array: validArray, callback: Function, initial?: unknown) => {
   //   // VALIDATION
 
   const initialValueType = Object.prototype.toString.call(initial);
@@ -72,10 +69,10 @@ const reduceFn = (array: validArray, callback: Function, initial? : unknown) => 
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
 
-  const isInitialValue = initial === undefined
+  const isInitialValue = initial === undefined;
 
-  let result : boolean | unknown = isInitialValue ? initial : clonedArray[0];
-  if (isInitialValue) clonedArray.unshift(initial)
+  let result: boolean | unknown = isInitialValue ? initial : clonedArray[0];
+  if (isInitialValue) clonedArray.unshift(initial);
 
   for (let i = 0; i < arrayLength; i++) {
     // callback(result, clonedArray[i]) === undefined
@@ -89,8 +86,7 @@ const reduceFn = (array: validArray, callback: Function, initial? : unknown) => 
 };
 
 // ****************** EVERY *****************
-const everyFn = (array: validArray, callback: Function) : boolean => {
-
+const everyFn = (array: validArray, callback: Function): boolean => {
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
 
@@ -104,7 +100,6 @@ const everyFn = (array: validArray, callback: Function) : boolean => {
 
 // ****************** SOME *****************
 const someFn = (array: validArray, callback: Function) => {
-
   const clonedArray = [...array];
   const arrayLength = clonedArray.length;
 
@@ -119,8 +114,6 @@ const someFn = (array: validArray, callback: Function) => {
   return false;
 };
 
-
-
 // ***********************************
 // *************** TESTING *******************
 // ***********************************
@@ -130,14 +123,13 @@ const testArray = [1, 2, 3, 4, 5];
 // const test = forEachFn([1, 2, 3, 4], "test");
 // console.log(test);
 
-
 // forEachFn(testArray, (el) => {
 //   console.log(el);
 // });
 
 // filterFn(testArray, (el) => el === 1 || el === 4);
 
-console.log(mapFn(testArray, (el: any) => el * 2)); 
+console.log(mapFn(testArray, (el: any) => el * 2));
 
 // console.log(entriesFn(testArray));
 

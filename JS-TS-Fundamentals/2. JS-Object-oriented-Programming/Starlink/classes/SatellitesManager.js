@@ -17,8 +17,14 @@ export default class SatellitesManager {
   }
 
   modifiers = {
-    height: (newProperty, sateliteId) =>
-      this.setHeight(sateliteId, newProperty),
+    height: (newProperty, satelliteId) =>
+      this.setHeight(satelliteId, newProperty),
+    coordinates: (newProperty, satelliteId) =>
+      this.setCoordinates(satelliteId, newProperty),
+    sailStatus: (newProperty, satelliteId) =>
+      this.setSailStatus(satelliteId, newProperty),
+    emitterStatus: (newProperty, satelliteId) =>
+      this.setEmitterStatus(satelliteId, newProperty),
   };
 
   // ********** GETTERS **********
@@ -37,7 +43,12 @@ export default class SatellitesManager {
 
   modifyProperty(satelliteId, property, newProperty) {
     const modifier = this.modifiers[property];
-    modifier(satelliteId, newProperty);
+    modifier(newProperty, satelliteId);
+  }
+
+  setPropetyForMany(arrayOfIds, property, newProperty) {
+    const modifier = this.modifiers[property];
+    arrayOfIds.forEach((el) => modifier(el, newProperty));
   }
 
   setHeight = (satelliteId, newHeight) => {

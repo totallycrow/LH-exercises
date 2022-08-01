@@ -2,6 +2,7 @@ import Satellite from "./Satellite.js";
 import SatellitesManager from "./SatellitesManager.js";
 import GroupManager from "./GroupManager.js";
 import Utilities from "../../Utilities.js";
+import Validator from "../../Validator.js";
 
 export default class Operator {
   // Ma miec: imie, nazwisko, uuid
@@ -51,48 +52,93 @@ export default class Operator {
     this.groupManager.removeSatelliteGroup(groupId);
   };
 
-  setSatelliteGroupHeight = (allSatellitesList, groupId, newHeight) => {
-    const satelitesFromGroupIds = this.groupManager.findOne(groupId);
-    this.satellitesManager.setPropetyForMany(
-      satelitesFromGroupIds,
-      "height",
-      newHeight
-    );
+  // *** SWITCH
+  setSatelliteGroupHeight = (groupId, newHeight) => {
+    this.setGroupProperty("height", groupId, newHeight);
   };
 
-  setSatelliteGroupCoordinates = (
-    allSatellitesList,
-    groupId,
-    newCoordinates
-  ) => {
-    this.groupManager.setGroupProperty(
-      allSatellitesList,
-      "coordinates",
-      groupId,
-      newCoordinates
-    );
+  // *** MODIFIER
+
+  setSatelliteGroupSignalEmitterStatus = (groupId, newStatus) => {
+    const satelliteIds = this.groupManager.getSatelliteIdsInGroup(groupId);
+    const satelliteListClone =
+      this.satellitesManager.allSatellitesList.slice(0);
+
+    satelliteListClone.forEach((el) => {
+      if (satelliteIds.some((id) => el.id === id)) {
+        this.satellitesManager.modifyProperty(
+          el.id,
+          "emitterStatus",
+          newStatus
+        );
+      }
+    });
   };
 
-  setSatelliteGroupSailsStatus = (allSatellitesList, groupId, newStatus) => {
-    this.groupManager.setGroupProperty(
-      allSatellitesList,
-      "solarSailStatus",
-      groupId,
-      newStatus
-    );
+  setSatelliteGroupCoordinates = (groupId, newCoordinates) => {
+    this.setGroupProperty("coordinates", groupId, newCoordinates);
   };
 
-  setSatelliteGroupSignalEmitterStatus = (
-    allSatellitesList,
-    groupId,
-    newStatus
-  ) => {
-    this.groupManager.setGroupProperty(
-      allSatellitesList,
-      "signalEmitterStatus",
-      groupId,
-      newStatus
-    );
+  setSatelliteGroupSailsStatus = (groupId, newStatus) => {
+    this.setGroupProperty("solarSailStatus", groupId, newStatus);
+  };
+
+  setGroupProperty = (key, groupId, newValue) => {
+    Validator.validateString(key);
+    Validator.validateString(groupId);
+
+    if (typeof newValue !== "string" && typeof newValue !== "number") {
+      throw new Error("Invalid new value");
+    }
+
+    const satelliteIds = this.groupManager.getSatelliteIdsInGroup(groupId);
+    const satelliteListClone =
+      this.satellitesManager.allSatellitesList.slice(0);
+
+    switch (key) {
+      case "height":
+        satelliteListClone.forEach((el) => {
+          if (satelliteIds.some((id) => el.id === id)) {
+            el.setHeight(newValue);
+          }
+        });
+        break;
+
+      case "solarSailStatus":
+        satelliteListClone.forEach((el) => {
+          if (satelliteIds.some((id) => el.id === id)) {
+            el.setSolarSailStatus(newValue);
+          }
+        });
+        break;
+
+      case "signalEmitterStatus":
+        satelliteListClone.forEach((el) => {
+          if (satelliteIds.some((id) => el.id === id)) {
+            el.setSignalEmitterStatus(newValue);
+          }
+        });
+        break;
+
+      case "poweredStatus":
+        satelliteListClone.forEach((el) => {
+          if (satelliteIds.some((id) => el.id === id)) {
+            el.setPoweredStatus(newValue);
+          }
+        });
+        break;
+
+      case "coordinates":
+        satelliteListClone.forEach((el) => {
+          if (satelliteIds.some((id) => el.id === id)) {
+            el.setCoordinates(newValue);
+          }
+        });
+        break;
+
+      default:
+        throw new Error("Invalid Key");
+    }
   };
 }
 

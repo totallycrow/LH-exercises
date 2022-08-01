@@ -57,64 +57,6 @@ export default class GroupManager {
     );
   };
 
-  setGroupProperty = (allSatellitesList, key, groupId, newValue) => {
-    Validator.validateArray(allSatellitesList);
-    Validator.validateString(key);
-    Validator.validateString(groupId);
-
-    if (typeof newValue !== "string" && typeof newValue !== "number") {
-      throw new Error("Invalid new value");
-    }
-
-    const satelliteIds = this.getSatelliteIdsInGroup(groupId);
-    const satelliteListClone = allSatellitesList.slice(0);
-
-    switch (key) {
-      case "height":
-        satelliteListClone.forEach((el) => {
-          if (satelliteIds.some((id) => el.id === id)) {
-            el.setHeight(newValue);
-          }
-        });
-        break;
-
-      case "solarSailStatus":
-        satelliteListClone.forEach((el) => {
-          if (satelliteIds.some((id) => el.id === id)) {
-            el.setSolarSailStatus(newValue);
-          }
-        });
-        break;
-
-      case "signalEmitterStatus":
-        satelliteListClone.forEach((el) => {
-          if (satelliteIds.some((id) => el.id === id)) {
-            el.setSignalEmitterStatus(newValue);
-          }
-        });
-        break;
-
-      case "poweredStatus":
-        satelliteListClone.forEach((el) => {
-          if (satelliteIds.some((id) => el.id === id)) {
-            el.setPoweredStatus(newValue);
-          }
-        });
-        break;
-
-      case "coordinates":
-        satelliteListClone.forEach((el) => {
-          if (satelliteIds.some((id) => el.id === id)) {
-            el.setCoordinates(newValue);
-          }
-        });
-        break;
-
-      default:
-        throw new Error("Invalid Key");
-    }
-  };
-
   //   setGroupHeight = (allSatellitesList, groupId, newHeight) => {
   //     // find satellites in group id
   //     const satelliteIds = this.getSatelliteIdsInGroup(groupId);

@@ -10,12 +10,7 @@ export default class Overlord extends Operator {
   };
 
   groupShutDown = (groupId) => {
-    this.groupManager.setGroupProperty(
-      this.satellitesManager.allSatellitesList,
-      "poweredStatus",
-      groupId,
-      "off"
-    );
+    this.setGroupProperty("poweredStatus", groupId, "off");
   };
 
   systemShutDown = () => {

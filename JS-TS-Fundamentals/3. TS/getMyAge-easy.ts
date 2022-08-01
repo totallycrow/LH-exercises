@@ -1,6 +1,6 @@
 type birthYear = number | string | Date;
 
-function getMyAge(input: birthYear) {
+function getMyAge(input: birthYear): number {
   let yourBirthYear: string;
 
   if (typeof input === "number") {
