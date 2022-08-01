@@ -20,11 +20,11 @@ export default class Location {
 
   setCoordinateX = (coordinate) => {
     Validator.validateString(coordinate);
-    this.coordinates.x = coordinate;
+    this.coordinates = { ...this.coordinates, x: coordinate };
   };
 
   setCoordinateY = (coordinate) => {
     Validator.validateString(coordinate);
-    this.coordinates.y = coordinate;
+    this.coordinates = { ...this.coordinates, y: coordinate };
   };
 }

@@ -52,10 +52,10 @@ export default class Operator {
   };
 
   setSatelliteGroupHeight = (allSatellitesList, groupId, newHeight) => {
-    this.groupManager.setGroupProperty(
-      allSatellitesList,
+    const satelitesFromGroupIds = this.groupManager.findOne(groupId);
+    this.satellitesManager.setPropetyForMany(
+      satelitesFromGroupIds,
       "height",
-      groupId,
       newHeight
     );
   };

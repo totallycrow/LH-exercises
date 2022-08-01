@@ -16,6 +16,11 @@ export default class SatellitesManager {
     return this._instance;
   }
 
+  modifiers = {
+    height: (newProperty, sateliteId) =>
+      this.setHeight(sateliteId, newProperty),
+  };
+
   // ********** GETTERS **********
 
   getSatellitesList = () => {
@@ -29,6 +34,11 @@ export default class SatellitesManager {
 
   // ********** MANAGEMENT **********
   // SETTERS
+
+  modifyProperty(satelliteId, property, newProperty) {
+    const modifier = this.modifiers[property];
+    modifier(satelliteId, newProperty);
+  }
 
   setHeight = (satelliteId, newHeight) => {
     this.findSatellite(satelliteId).setHeight(newHeight);
@@ -60,6 +70,7 @@ export default class SatellitesManager {
 
   // MANAGEMENT
 
+  // L
   createNewSatellite = (locationObj) => {
     Validator.validateInt(locationObj.height);
     Validator.validateCooridnatesObject(locationObj.coordinates);

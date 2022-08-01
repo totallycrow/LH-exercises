@@ -9,16 +9,18 @@ describe("Starlink", () => {
   //     coordinates: { x: "615.5", y: "600.55" },
   //   });
 
-  test("New instance of Operator is created", () => {
-    expect(operator instanceof Operator).toBe(true);
-  });
+  // test("New instance of Operator is created", () => {
+  //   expect(operator instanceof Operator).toBe(true);
+  // });
 
-  test("New instance of Overlord is created", () => {
-    expect(overlord instanceof Operator).toBe(true);
-  });
+  // test("New instance of Overlord is created", () => {
+  //   expect(overlord instanceof Operator).toBe(true);
+  // });
+
+  beforeAll(() => {});
 
   test("A new Satellite is created by an operator", () => {
-    operator.satellitesManager.createNewSatellite({
+    const satelite = operator.satellitesManager.createNewSatellite({
       height: 650,
       coordinates: { x: "615.5", y: "600.55" },
     });
@@ -31,10 +33,12 @@ describe("Starlink", () => {
   });
 
   test("A new Satellite is created by an overlord", () => {
-    overlord.satellitesManager.createNewSatellite({
+    const mockedSateliteConstructor = {
       height: 1990,
       coordinates: { x: "994.5", y: "988.9" },
-    });
+    };
+
+    overlord.satellitesManager.createNewSatellite(mockedSateliteConstructor);
     expect(overlord.satellitesManager.allSatellitesList.length).toBe(2);
   });
 
@@ -43,15 +47,15 @@ describe("Starlink", () => {
     expect(overlord.groupManager.allSatellitesGroups.length).toBe(2);
   });
 
-  test("The first Group is empty", () => {
-    const firstGroup = overlord.groupManager.getSatellitesGroups()[0];
-    console.log(firstGroup);
+  // test("The first Group is empty", () => {
+  //   const firstGroup = overlord.groupManager.getSatellitesGroups()[0];
+  //   console.log(firstGroup);
 
-    const satsOfGroup = firstGroup.getGroupSatellitesList();
-    console.log(satsOfGroup);
+  //   const satsOfGroup = firstGroup.getGroupSatellitesList();
+  //   console.log(satsOfGroup);
 
-    expect(satsOfGroup.length).toBe(0);
-  });
+  //   expect(satsOfGroup.length).toBe(0);
+  // });
 
   test("A first Satellite in the list is added to the first group in the list", () => {
     const sat1 = overlord.satellitesManager.allSatellitesList[0];
@@ -67,20 +71,25 @@ describe("Starlink", () => {
     ).toBe(1);
   });
 
-  test("Height of all Satellites in the first Group in the list is changed to number 9999999", () => {
-    const sat1 = overlord.satellitesManager.allSatellitesList[0];
+  test("Height of all Satellites in the first Group in the list is changed to given number", () => {
+    // GIVEN
+    const givenMockedNumber = 9999999;
+    const selectedSateliteByMockedId =
+      overlord.satellitesManager.allSatellitesList[0];
     const firstGroup = overlord.groupManager.getSatellitesGroups()[0];
 
+    // WHEN
     overlord.groupManager.setGroupProperty(
       overlord.satellitesManager.allSatellitesList,
       "height",
       firstGroup.id,
-      9999999
+      givenMockedNumber
     );
 
-    expect(
-      overlord.satellitesManager.allSatellitesList[0].location.height
-    ).toBe(9999999);
+    // THEN
+    expect(satellitesManager.allSatellitesList[0].location.height).toBe(
+      givenMockedNumber
+    );
   });
 
   //   test("A new satellite is added to the group", () => {

@@ -6,9 +6,9 @@ describe("Location", () => {
     coordinates: { x: "15.5", y: "100.55" },
   });
 
-  test("New instance of Satellite is created", () => {
-    expect(testSat instanceof Satellite).toBe(true);
-  });
+  // test("New instance of Satellite is created", () => {
+  //   expect(testSat instanceof Satellite).toBe(true);
+  // });
 
   test("Satellite's Solar Sails are turned on ", () => {
     testSat.setSolarSailStatus("on");
