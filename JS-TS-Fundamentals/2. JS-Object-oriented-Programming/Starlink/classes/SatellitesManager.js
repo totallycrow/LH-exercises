@@ -46,11 +46,6 @@ export default class SatellitesManager {
     modifier(newProperty, satelliteId);
   }
 
-  setPropetyForMany(arrayOfIds, property, newProperty) {
-    const modifier = this.modifiers[property];
-    arrayOfIds.forEach((el) => modifier(el, newProperty));
-  }
-
   setHeight = (satelliteId, newHeight) => {
     this.findSatellite(satelliteId).setHeight(newHeight);
   };
