@@ -27,8 +27,7 @@ const findPhraseInArray = (array, phrase) => {
             foundIndex = index;
             return true;
         }
-        else
-            return false;
+        return false;
     });
     if (result) {
         return [foundIndex, clonedArray[foundIndex]];
