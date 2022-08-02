@@ -33,3 +33,6 @@ console.log(getMyAge("1990"));
 // console.log(getMyAge("3000"));
 // console.log(getMyAge(new Date(1980, 1, 1)));
 // console.log(getMyAge({ year: "1990" }));
+
+
+// Pick / Omit / union types with objects { property: "height", value:number } | { property: "name", value:string } 

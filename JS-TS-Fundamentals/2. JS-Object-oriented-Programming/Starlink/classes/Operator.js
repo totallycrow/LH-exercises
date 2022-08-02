@@ -97,6 +97,9 @@ export default class Operator {
 
     switch (key) {
       case "height":
+        if (typeof newValue !== "number") {
+          throw new Error("Invalid new value");
+        }
         satelliteListClone.forEach((el) => {
           if (satelliteIds.some((id) => el.id === id)) {
             el.setHeight(newValue);
@@ -105,6 +108,9 @@ export default class Operator {
         break;
 
       case "solarSailStatus":
+        if (typeof newValue !== "string") {
+          throw new Error("Invalid new value");
+        }
         satelliteListClone.forEach((el) => {
           if (satelliteIds.some((id) => el.id === id)) {
             el.setSolarSailStatus(newValue);

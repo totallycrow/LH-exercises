@@ -18,23 +18,26 @@ const inputData = [
 
 type indexAndValue = [number, string];
 
-const findPhraseInArray = (
-  array: string[],
-  phrase: string
-): indexAndValue | string => {
+type TFindPhraseInArray = (array: string[],  phrase: string) => indexAndValue | string
+
+const findPhraseInArray: TFindPhraseInArray = (
+  array,
+  phrase
+) => {
   if (array.length === 0) {
     throw new Error("Empty array provided");
   }
 
   const clonedArray = array.slice(0);
 
-  let foundIndex: number = -1;
+  let foundIndex = -1;
 
   const result = clonedArray.some((el, index) => {
     if (el.toLowerCase() === phrase.toLowerCase()) {
       foundIndex = index;
       return true;
-    } else return false;
+    } 
+   return false;
   });
 
   if (result) {
