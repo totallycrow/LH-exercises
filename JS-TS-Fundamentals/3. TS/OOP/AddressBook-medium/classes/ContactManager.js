@@ -17,9 +17,6 @@ class ContactManager {
             if (this.isInList(contact)) {
                 throw new Error("Contact already in the list!");
             }
-            // // immutability principle
-            // const copy = this.allContacts.slice(0);
-            // this.allContacts = Utilities.addItemToArray(contact, copy);
             this.allContacts.push(contact);
         };
         this.createNew = (contact) => {
@@ -29,8 +26,6 @@ class ContactManager {
         this.removeFromList = (contactId) => {
             if (!Validator_js_1.Validator.findByIdInArray(this.allContacts, contactId))
                 throw new Error("Contact Not Found in the List");
-            // const copy = this.allContacts.slice(0);
-            // this.allContacts = Utilities.filterById(id, copy);
             this.allContacts = this.allContacts.filter((el) => el.id !== contactId);
         };
         this.allContacts = [];

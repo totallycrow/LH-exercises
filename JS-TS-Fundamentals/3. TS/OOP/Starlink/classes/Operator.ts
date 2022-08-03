@@ -34,6 +34,7 @@ export default class Operator {
   // **************************************************
 
   // this.satellitesManager. doesnt work??
+  // Property 'setHeight' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setHeight' instead?ts(2576)
 
   setIndividualSatelliteHeight = (satelliteId: string, newHeight: number) => {
     SatellitesManager.setHeight(satelliteId, newHeight);

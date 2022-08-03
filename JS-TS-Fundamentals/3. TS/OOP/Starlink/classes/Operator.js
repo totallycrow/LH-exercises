@@ -15,6 +15,7 @@ class Operator {
         // ********** MANAGE INDIVIDUAL SATELLITES **********
         // **************************************************
         // this.satellitesManager. doesnt work??
+        // Property 'setHeight' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setHeight' instead?ts(2576)
         this.setIndividualSatelliteHeight = (satelliteId, newHeight) => {
             SatellitesManager_js_1.default.setHeight(satelliteId, newHeight);
         };

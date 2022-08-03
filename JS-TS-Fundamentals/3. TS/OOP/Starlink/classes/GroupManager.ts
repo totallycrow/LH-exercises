@@ -24,11 +24,11 @@ export default class GroupManager {
   private constructor() {}
 
   public static getInstance(): GroupManager {
-    if (!GroupManager.instance) {
-      GroupManager.instance = new GroupManager();
+    if (!this.instance) {
+      this.instance = new GroupManager();
     }
     // this.instance??
-    return GroupManager.instance;
+    return this.instance;
   }
 
   // ********** GETTERS **********

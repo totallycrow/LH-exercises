@@ -28,11 +28,6 @@ export default class ContactManager {
     if (this.isInList(contact)) {
       throw new Error("Contact already in the list!");
     }
-
-    // // immutability principle
-    // const copy = this.allContacts.slice(0);
-    // this.allContacts = Utilities.addItemToArray(contact, copy);
-
     this.allContacts.push(contact);
   };
 
@@ -44,9 +39,6 @@ export default class ContactManager {
   removeFromList = (contactId: string) => {
     if (!Validator.findByIdInArray(this.allContacts, contactId))
       throw new Error("Contact Not Found in the List");
-
-    // const copy = this.allContacts.slice(0);
-    // this.allContacts = Utilities.filterById(id, copy);
     this.allContacts = this.allContacts.filter((el) => el.id !== contactId);
   };
 }

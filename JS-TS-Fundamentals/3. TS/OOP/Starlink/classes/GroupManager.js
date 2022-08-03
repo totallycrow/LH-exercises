@@ -10,11 +10,11 @@ const GroupOfSatellites_js_1 = __importDefault(require("./GroupOfSatellites.js")
 class GroupManager {
     constructor() { }
     static getInstance() {
-        if (!GroupManager.instance) {
-            GroupManager.instance = new GroupManager();
+        if (!this.instance) {
+            this.instance = new GroupManager();
         }
         // this.instance??
-        return GroupManager.instance;
+        return this.instance;
     }
 }
 exports.default = GroupManager;

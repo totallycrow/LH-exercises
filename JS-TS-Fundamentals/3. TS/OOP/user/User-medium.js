@@ -1,10 +1,7 @@
 "use strict";
-// Stwórz dwie klasy dla struktury danych związanych z użytkownikiem(wytyczne w kodzie poniżej)
-// Klasa User ma dostępne dwa poziomy dostępu: normal i admin.
-// Powinna umożliwiać zmianę hasła, emaila oraz poziomu dostępu.
-// User z poziomem dostępu = "admin" może zmieniać hasła,emaile oraz poziomy dostępu innych użytkowników.
-// Klasa App powinna zarządzać relacjami pomiędzy użytkownikami.
-// Zawiera listę użytkowników, pozwala tworzyć nowych użytkowników o różnych poziomach dostępu.
+// *********************************************************
+// *********************** USER ****************************
+// *********************************************************
 var _a;
 // *** CLASS ***
 class User {

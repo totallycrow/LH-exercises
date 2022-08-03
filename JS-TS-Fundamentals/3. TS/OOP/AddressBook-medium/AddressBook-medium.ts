@@ -14,8 +14,8 @@ import GroupManager from "./classes/GroupManager.js";
 // *********************************************************
 
 class AddressBook {
-  contactManager: ContactManager;
-  groupManager: GroupManager;
+  private contactManager: ContactManager;
+  private groupManager: GroupManager;
 
   // Ma mieć: listę wszystkich kontaktów, listę grup kontaktów
   // Ma umożliwiać: szukanie kontaktu po frazie, dodawanie/usuwanie/modyfikacje nowych kontaktów, dodawanie/usuwanie/modyfikacje nowych grup
@@ -24,38 +24,37 @@ class AddressBook {
     this.groupManager = new GroupManager();
   }
 
-  findContactByPhrase = (phrase: string) => {
+  findContactByPhrase = (phrase: string): Contact[] => {
     if (phrase.length < 2) {
-      return [];
+      throw new Error("Provided phrase is too short");
     }
     return this.contactManager.findByPhrase(phrase);
   };
 
   // ******* HANDLE CONTACTS *******
-  addContactToList = (contact: Contact) => {
+  addContactToList = (contact: Contact): void => {
     this.contactManager.addToList(contact);
   };
 
-  createNewContact = (contact: Contact) => {
+  createNewContact = (contact: Contact): void => {
     this.contactManager.createNew(contact);
   };
 
-  removeContactFromList = (contactId: string) => {
+  removeContactFromList = (contactId: string): void => {
     this.contactManager.removeFromList(contactId);
     this.groupManager.removeContactFromAllGroups(contactId);
   };
 
-  addContactToGroup(contactId: string, groupId: string) {
+  addContactToGroup(contactId: string, groupId: string): void {
     this.contactManager.removeFromList(contactId);
   }
 
-  removeContactFromGroup = (contactId: string) => {
+  removeContactFromGroup = (contactId: string): void => {
     this.contactManager.removeFromList(contactId);
-    // Garbage collection? Remove from lists & groups to remove all references?
     this.groupManager.removeContactFromAllGroups(contactId);
   };
 
-  modifyContact = (contact: Contact, key: string, newValue: string | Date) => {
+  modifyContact = (contact: Contact, key: string, newValue: string): void => {
     switch (key) {
       case "name":
         if (typeof newValue === "string") contact.setName(newValue);
@@ -69,29 +68,26 @@ class AddressBook {
         if (newValue === "string") contact.setEmail(newValue);
         break;
 
-      case "modificationDate":
-        if (newValue instanceof Date) contact.setModificationDate(newValue);
-        break;
-
       default:
         throw new Error("Invalid Key");
     }
+    contact.setModificationDate(new Date());
   };
 
   // ******* HANDLE GROUPS *******
-  addGroupToList = (group: Group) => {
+  addGroupToList = (group: Group): void => {
     this.groupManager.addToList(group);
   };
 
-  createNewGroup = (name: string) => {
+  createNewGroup = (name: string): void => {
     this.groupManager.createNew(name);
   };
 
-  setGroupName = (group: Group, newName: string) => {
+  setGroupName = (group: Group, newName: string): void => {
     this.groupManager.setName(group, newName);
   };
 
-  removeGroupFromList = (group: Group) => {
+  removeGroupFromList = (group: Group): void => {
     this.groupManager.removeFromList(group);
   };
 }

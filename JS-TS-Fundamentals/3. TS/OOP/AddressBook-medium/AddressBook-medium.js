@@ -19,7 +19,7 @@ class AddressBook {
     constructor() {
         this.findContactByPhrase = (phrase) => {
             if (phrase.length < 2) {
-                return [];
+                throw new Error("Provided phrase is too short");
             }
             return this.contactManager.findByPhrase(phrase);
         };
@@ -36,7 +36,6 @@ class AddressBook {
         };
         this.removeContactFromGroup = (contactId) => {
             this.contactManager.removeFromList(contactId);
-            // Garbage collection? Remove from lists & groups to remove all references?
             this.groupManager.removeContactFromAllGroups(contactId);
         };
         this.modifyContact = (contact, key, newValue) => {
@@ -53,13 +52,10 @@ class AddressBook {
                     if (newValue === "string")
                         contact.setEmail(newValue);
                     break;
-                case "modificationDate":
-                    if (newValue instanceof Date)
-                        contact.setModificationDate(newValue);
-                    break;
                 default:
                     throw new Error("Invalid Key");
             }
+            contact.setModificationDate(new Date());
         };
         // ******* HANDLE GROUPS *******
         this.addGroupToList = (group) => {

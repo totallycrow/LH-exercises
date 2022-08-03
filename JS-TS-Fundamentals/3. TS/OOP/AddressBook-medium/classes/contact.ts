@@ -32,7 +32,7 @@ export class Contact implements Person {
     this.modificationDate = new Date();
   }
 
-  setModificationDate = (newDate: Date) => {
+  setModificationDate = (newDate: Date): void => {
     this.modificationDate = newDate;
   };
 
