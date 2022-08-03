@@ -6,7 +6,7 @@ import { Contact } from "./contact.js";
 import { Validator } from "../Validator.js";
 
 export default class ContactManager {
-  allContacts: Contact[];
+  private allContacts: Contact[];
   constructor() {
     this.allContacts = [];
   }

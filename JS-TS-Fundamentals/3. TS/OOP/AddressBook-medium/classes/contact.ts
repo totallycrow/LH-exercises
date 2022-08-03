@@ -11,12 +11,18 @@ export interface Person {
 export class Contact implements Person {
   // Ma mieć: Imie, Nazwisko, adres-emial, datę modyfikacji i utworzenia, uuid
   // Ma umożliwiać: aktualizację datę modyfikacji, pozwalac na modyfikację imienia, nazwiska oraz adresu email
+
+  // ******
+  // can;t private because of the interface?
+  // Class 'Contact' incorrectly implements interface 'Person'.
+  // Property 'name' is private in type 'Contact' but not in type 'Person'.ts(2420)
+
   id: string;
   name: string;
   surname: string;
   email: string;
-  creationDate: Date;
-  modificationDate: Date;
+  private creationDate: Date;
+  private modificationDate: Date;
   constructor(obj: Person, id: string) {
     this.id = id;
     this.name = obj.name;

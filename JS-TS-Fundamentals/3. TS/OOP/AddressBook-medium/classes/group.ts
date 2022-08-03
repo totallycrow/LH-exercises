@@ -11,9 +11,9 @@ import { Contact } from "./contact.js";
 export default class Group {
   // Ma mieć: listę kontaktów oraz nazwę grupy oraz uuid
   // Ma umożliwiać: zmianę nazwy grupy, można dodać lub usunac kontakt z grupy, można sprawdzić czy kontakt istnieje w grupie
-  name: string;
-  id: string;
-  groupContactList: string[];
+  private name: string;
+  readonly id: string;
+  private groupContactList: string[];
   constructor(groupName: string) {
     Validator.validateString(groupName);
     this.id = Utilities.idGenerator();

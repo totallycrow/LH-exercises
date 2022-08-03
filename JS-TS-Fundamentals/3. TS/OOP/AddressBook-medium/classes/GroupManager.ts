@@ -4,7 +4,7 @@ import Group from "./group.js";
 import { Contact } from "./contact.js";
 
 export default class GroupManager {
-  allGroups: Group[];
+  private allGroups: Group[];
   constructor() {
     this.allGroups = [];
   }
