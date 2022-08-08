@@ -9,9 +9,11 @@ interface IUser {
   name: string;
   surname: string;
   dob: string | Date;
-  password: string;
   email: string;
   access: string;
+
+  setPassword(): TSetter
+  setEmail
 }
 
 interface adminAndUser {
@@ -21,13 +23,13 @@ interface adminAndUser {
 
 // *** CLASS ***
 class User implements IUser {
-  id: string;
-  name: string;
-  surname: string;
-  dob: string | Date;
-  password: string;
-  email: string;
-  access: string;
+  readonly id: string;
+  readonly name: string;
+  readonly surname: string;
+  readonly dob: string | Date;
+  private password: string;
+  readonly email: string;
+  readonly access: string;
 
   constructor(user: IUser, access: string, id = "") {
     this.id = id;
@@ -57,20 +59,19 @@ class User implements IUser {
 
 class App {
   private static instance: App;
-  static _userList: User[] = [];
+  static _userList: IUser[] = [];
 
   private constructor() {}
 
-  public static getInstance(): App {
-    if (!App.instance) {
-      App.instance = new App();
+  public static getInstance(): IApp {
+    if (!this.instance) {
+      this.instance = new App();
     }
 
-    // no this.instance??
-    return App.instance;
+    return this.instance;
   }
 
-  static addUser = (user: User): void => {
+  static addUser = (user: IUser): void => {
     if (this._userList.find((el) => el.id === user.id))
       throw new Error("User already in the list");
 

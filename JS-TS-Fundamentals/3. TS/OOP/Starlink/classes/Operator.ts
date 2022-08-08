@@ -37,28 +37,28 @@ export default class Operator {
   // Property 'setHeight' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setHeight' instead?ts(2576)
 
   setIndividualSatelliteHeight = (satelliteId: string, newHeight: number) => {
-    SatellitesManager.setHeight(satelliteId, newHeight);
+    this.satellitesManager.setHeight(satelliteId, newHeight);
   };
 
   setIndividualSatelliteCoordinates = (
     satelliteId: string,
     newCoordinates: ICoordinates
   ) => {
-    SatellitesManager.setCoordinates(satelliteId, newCoordinates);
+    SatellitesManager.getInstance().setCoordinates(satelliteId, newCoordinates);
   };
 
   setIndividualSatelliteSailStatus = (
     satelliteId: string,
     newStatus: string
   ) => {
-    SatellitesManager.setSailStatus(satelliteId, newStatus);
+    SatellitesManager.getInstance().setSailStatus(satelliteId, newStatus);
   };
 
   setIndividualSatelliteEmitterStatus = (
     satelliteId: string,
     newStatus: string
   ) => {
-    SatellitesManager.setEmitterStatus(satelliteId, newStatus);
+    SatellitesManager.getInstance().setEmitterStatus(satelliteId, newStatus);
   };
 
   // *************************************************
@@ -85,12 +85,12 @@ export default class Operator {
     newStatus: string
   ) => {
     const satelliteIds = GroupManager.getSatelliteIdsInGroup(groupId);
-    const satelliteListClone = SatellitesManager.allSatellitesList.slice(0);
+    const satelliteListClone = SatellitesManager.getInstance().getSatellitesList().slice(0);
 
     if (satelliteIds) {
       satelliteListClone.forEach((el) => {
         if (satelliteIds.some((id) => el.id === id)) {
-          SatellitesManager.modifyProperty({
+          SatellitesManager.getInstance().modifyProperty({
             property: "emitterStatus",
             value: newStatus,
             id: el.id,

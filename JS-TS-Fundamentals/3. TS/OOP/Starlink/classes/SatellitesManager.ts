@@ -19,34 +19,42 @@ interface IModifier {
   emitterStatus: (newProperty: string, satelliteId: string) => void;
 }
 
-type THeightSetter = {
+type THeightSetter  = {
   property: "height";
   value: number;
-  id: string;
+  id:string;
 };
 
 type TStatusSetter = {
   property: "emitterStatus";
   value: string;
-  id: string;
+  id:string;
 };
+
+
+
+interface ISatellitesManager {
+  getHeight(): number
+
+  getInstance(): ISatellitesManager
+}
 
 export default class SatellitesManager {
   private static instance: SatellitesManager;
 
-  static allSatellitesList: Satellite[] = [];
+  private allSatellitesList: Satellite[] = [];
 
   private constructor() {}
 
   public static getInstance(): SatellitesManager {
     if (!SatellitesManager.instance) {
-      SatellitesManager.instance = new SatellitesManager();
+      this.instance = new SatellitesManager();
     }
     // this.instance??
-    return SatellitesManager.instance;
+    return this.instance;
   }
 
-  static modifiers: IModifier = {
+  modifiers = {
     height: (newProperty: number, satelliteId: string) =>
       this.setHeight(satelliteId, newProperty),
     coordinates: (newProperty: ICoordinates, satelliteId: string) =>
@@ -59,11 +67,11 @@ export default class SatellitesManager {
 
   // ********** GETTERS **********
 
-  static getSatellitesList = () => {
+  getSatellitesList = () => {
     return this.allSatellitesList;
   };
 
-  static findSatellite = (satelliteId: string) => {
+   findSatellite = (satelliteId: string) => {
     Validator.validateString(satelliteId);
     return this.allSatellitesList.find((el) => el.id === satelliteId);
   };
@@ -75,25 +83,19 @@ export default class SatellitesManager {
   // property: number,
   // newProperty: number
 
-  public static modifyProperty(obj: THeightSetter | TStatusSetter) {
-    const property = obj.property;
-    const modifier = this.modifiers[obj.property];
-
-    // ???
-
-    if (property === "height") this.modifiers[property](obj.value, obj.id);
-    if (property === "emitterStatus")
-      this.modifiers[property](obj.value, obj.id);
+  public modifyProperty({property, value, id}: THeightSetter | TStatusSetter) {
+    const modifier = this.modifiers[property]
+    modifier(value as never, id)
   }
 
-  static setHeight = (satelliteId: string, newHeight: number) => {
+   setHeight = (satelliteId: string, newHeight: number) => {
     const sat = this.findSatellite(satelliteId);
     if (sat) {
       sat.setHeight(newHeight);
     }
   };
 
-  static setCoordinates = (
+   setCoordinates = (
     satelliteId: string,
     newCoordinates: ICoordinates
   ) => {
@@ -104,14 +106,14 @@ export default class SatellitesManager {
     // this.findSatellite(satelliteId).location.setCoordinates(newCoordinates);
   };
 
-  static setSailStatus = (satelliteId: string, status: string) => {
+   setSailStatus = (satelliteId: string, status: string) => {
     const sat = this.findSatellite(satelliteId);
     if (sat) {
       sat.setSolarSailStatus(status);
     }
   };
 
-  static setEmitterStatus = (satelliteId: string, status: string) => {
+   setEmitterStatus = (satelliteId: string, status: string) => {
     const sat = this.findSatellite(satelliteId);
     if (sat) {
       sat.setSignalEmitterStatus(status);
@@ -119,7 +121,7 @@ export default class SatellitesManager {
     // this.findSatellite(satelliteId).setSignalEmitterStatus(status);
   };
 
-  static setOnOffStatus = (satelliteId: string, status: string) => {
+   setOnOffStatus = (satelliteId: string, status: string) => {
     const sat = this.findSatellite(satelliteId);
     if (sat) {
       sat.setPoweredStatus(status);
@@ -127,34 +129,27 @@ export default class SatellitesManager {
     // this.findSatellite(satelliteId).setPoweredStatus(status);
   };
 
-  static turnOffAllSatellites = () => {
-    this.getSatellitesList().forEach((sat) => sat.setPoweredStatus("off"));
+   turnOffAllSatellites = () => {
+    this.allSatellitesList.forEach((sat) => sat.setPoweredStatus("off"));
   };
 
-  static turnOnAllSatellites = () => {
-    this.getSatellitesList().forEach((sat) => sat.setPoweredStatus("on"));
+  turnOnAllSatellites = () => {
+    this.allSatellitesList.forEach((sat) => sat.setPoweredStatus("on"));
   };
 
   // MANAGEMENT
 
   // L
-  static createNewSatellite = (locationObj: ILocation) => {
-    Validator.validateInt(locationObj.height);
-    Validator.validateCooridnatesObject(locationObj.coordinates);
+   createNewSatellite = (locationObj: ILocation) => {
     const newSat = new Satellite(locationObj);
     this.allSatellitesList.push(newSat);
   };
 
-  static addSattelliteToList = (satellite: Satellite) => {
-    Validator.validateSatellite(satellite);
-
-    if (Validator.findByIdInArrayOfIds(this.allSatellitesList, satellite.id)) {
-      throw "Satellite already in the list";
-    }
-    this.allSatellitesList = [...this.allSatellitesList, satellite];
+   addSattelliteToList = (satellite: Satellite) => {
+    this.allSatellitesList.push(satellite)
   };
 
-  static removeSatelliteFromAllGroups = (
+   removeSatelliteFromAllGroups = (
     satId: string,
     allGroups: GroupOfSatellites[]
   ) => {
@@ -167,41 +162,43 @@ export default class SatellitesManager {
     });
   };
 
-  static removeSatelliteFromList = (satellite: Satellite, allGroups: []) => {
-    Validator.validateSatellite(satellite);
 
-    if (!Validator.findByIdInArrayOfIds(this.allSatellitesList, satellite.id)) {
+  // invalidate
+
+   removeSatelliteFromList = (satelliteId: string) => {
+    if (!Validator.findByIdInArrayOfIds(this.allSatellitesList, satelliteId)) {
       throw "Satellite not found in the list";
     }
+
+    const map = new Map()
+
+    map.delete(satelliteId)
     this.allSatellitesList = this.allSatellitesList.filter(
-      (el) => el.id !== satellite.id
+      (el) => el.id !== satelliteId
     );
-    this.removeSatelliteFromAllGroups(satellite.id, allGroups);
   };
 
-  static addSatelliteToGroup = (
-    satellite: Satellite,
-    groupId: string,
-    groupList: GroupOfSatellites[]
-  ) => {
-    Validator.validateSatellite(satellite);
+  //  addSatelliteToGroup = (
+  //   satelliteId: Satellite,
+  //   groupId: string,
+  //   groupList: GroupOfSatellites[]
+  // ) => {
+  //   // find group by id
+  //   const groupToAdd = groupList.find((el) => el.id === groupId);
+  //   console.log("GROUP TO ADD", groupToAdd);
 
-    // find group by id
-    const groupToAdd = groupList.find((el) => el.id === groupId);
-    console.log("GROUP TO ADD", groupToAdd);
+  //   if (groupToAdd) groupToAdd.addToGroup(satelliteId);
+  // };
 
-    if (groupToAdd) groupToAdd.addToGroup(satellite.id);
-  };
-
-  static removeSatelliteFromGroup = (
-    satelliteId: string,
-    groupId: string,
-    groupList: GroupOfSatellites[]
-  ) => {
-    // find group by id
-    const groupToRemoveFrom = groupList.find((el) => el.id === groupId);
-    if (groupToRemoveFrom) groupToRemoveFrom.removeFromGroup(satelliteId);
-  };
+  //  removeSatelliteFromGroup = (
+  //   satelliteId: string,
+  //   groupId: string,
+  //   groupList: GroupOfSatellites[]
+  // ) => {
+  //   // find group by id
+  //   const groupToRemoveFrom = groupList.find((el) => el.id === groupId);
+  //   if (groupToRemoveFrom) groupToRemoveFrom.removeFromGroup(satelliteId);
+  // };
 }
 
 // SatellitesManager.getInstance().getSatellitesGroups();
