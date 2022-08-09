@@ -1,137 +1,126 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var _a;
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore
 const Validator_js_1 = __importDefault(require("../../Validator.js"));
 const Satellite_js_1 = __importDefault(require("./Satellite.js"));
 class SatellitesManager {
-    constructor() { }
-    static getInstance() {
-        if (!SatellitesManager.instance) {
-            SatellitesManager.instance = new SatellitesManager();
-        }
-        // this.instance??
-        return SatellitesManager.instance;
-    }
-    // ********** MANAGEMENT **********
-    // SETTERS
-    // satelliteId: string,
-    // property: number,
-    // newProperty: number
-    static modifyProperty(obj) {
-        const property = obj.property;
-        const modifier = this.modifiers[obj.property];
-        // ???
-        if (property === "height")
-            this.modifiers[property](obj.value, obj.id);
-        if (property === "emitterStatus")
-            this.modifiers[property](obj.value, obj.id);
-    }
-}
-exports.default = SatellitesManager;
-_a = SatellitesManager;
-SatellitesManager.allSatellitesList = [];
-SatellitesManager.modifiers = {
-    height: (newProperty, satelliteId) => _a.setHeight(satelliteId, newProperty),
-    coordinates: (newProperty, satelliteId) => _a.setCoordinates(satelliteId, newProperty),
-    sailStatus: (newProperty, satelliteId) => _a.setSailStatus(satelliteId, newProperty),
-    emitterStatus: (newProperty, satelliteId) => _a.setEmitterStatus(satelliteId, newProperty),
-};
-// ********** GETTERS **********
-SatellitesManager.getSatellitesList = () => {
-    return _a.allSatellitesList;
-};
-SatellitesManager.findSatellite = (satelliteId) => {
-    Validator_js_1.default.validateString(satelliteId);
-    return _a.allSatellitesList.find((el) => el.id === satelliteId);
-};
-SatellitesManager.setHeight = (satelliteId, newHeight) => {
-    const sat = _a.findSatellite(satelliteId);
-    if (sat) {
+  constructor() {
+    this.allSatellitesList = [];
+    this.modifiers = {
+      height: (newProperty, satelliteId) =>
+        this.setHeight(satelliteId, newProperty),
+      coordinates: (newProperty, satelliteId) =>
+        this.setCoordinates(satelliteId, newProperty),
+      sailStatus: (newProperty, satelliteId) =>
+        this.setSailStatus(satelliteId, newProperty),
+      emitterStatus: (newProperty, satelliteId) =>
+        this.setEmitterStatus(satelliteId, newProperty),
+    };
+    // ********** GETTERS **********
+    this.getSatellitesList = () => {
+      return this.allSatellitesList;
+    };
+    this.findSatellite = (satelliteId) => {
+      Validator_js_1.default.validateString(satelliteId);
+      return this.allSatellitesList.find((el) => el.id === satelliteId);
+    };
+    this.setHeight = (satelliteId, newHeight) => {
+      const sat = this.findSatellite(satelliteId);
+      if (sat) {
         sat.setHeight(newHeight);
-    }
-};
-SatellitesManager.setCoordinates = (satelliteId, newCoordinates) => {
-    const sat = _a.findSatellite(satelliteId);
-    if (sat) {
+      }
+    };
+    this.setCoordinates = (satelliteId, newCoordinates) => {
+      const sat = this.findSatellite(satelliteId);
+      if (sat) {
         sat.setCoordinates(newCoordinates);
-    }
-    // this.findSatellite(satelliteId).location.setCoordinates(newCoordinates);
-};
-SatellitesManager.setSailStatus = (satelliteId, status) => {
-    const sat = _a.findSatellite(satelliteId);
-    if (sat) {
+      }
+      // this.findSatellite(satelliteId).location.setCoordinates(newCoordinates);
+    };
+    this.setSailStatus = (satelliteId, status) => {
+      const sat = this.findSatellite(satelliteId);
+      if (sat) {
         sat.setSolarSailStatus(status);
-    }
-};
-SatellitesManager.setEmitterStatus = (satelliteId, status) => {
-    const sat = _a.findSatellite(satelliteId);
-    if (sat) {
+      }
+    };
+    this.setEmitterStatus = (satelliteId, status) => {
+      const sat = this.findSatellite(satelliteId);
+      if (sat) {
         sat.setSignalEmitterStatus(status);
-    }
-    // this.findSatellite(satelliteId).setSignalEmitterStatus(status);
-};
-SatellitesManager.setOnOffStatus = (satelliteId, status) => {
-    const sat = _a.findSatellite(satelliteId);
-    if (sat) {
+      }
+      // this.findSatellite(satelliteId).setSignalEmitterStatus(status);
+    };
+    this.setOnOffStatus = (satelliteId, status) => {
+      const sat = this.findSatellite(satelliteId);
+      if (sat) {
         sat.setPoweredStatus(status);
-    }
-    // this.findSatellite(satelliteId).setPoweredStatus(status);
-};
-SatellitesManager.turnOffAllSatellites = () => {
-    _a.getSatellitesList().forEach((sat) => sat.setPoweredStatus("off"));
-};
-SatellitesManager.turnOnAllSatellites = () => {
-    _a.getSatellitesList().forEach((sat) => sat.setPoweredStatus("on"));
-};
-// MANAGEMENT
-// L
-SatellitesManager.createNewSatellite = (locationObj) => {
-    Validator_js_1.default.validateInt(locationObj.height);
-    Validator_js_1.default.validateCooridnatesObject(locationObj.coordinates);
-    const newSat = new Satellite_js_1.default(locationObj);
-    _a.allSatellitesList.push(newSat);
-};
-SatellitesManager.addSattelliteToList = (satellite) => {
-    Validator_js_1.default.validateSatellite(satellite);
-    if (Validator_js_1.default.findByIdInArrayOfIds(_a.allSatellitesList, satellite.id)) {
-        throw "Satellite already in the list";
-    }
-    _a.allSatellitesList = [..._a.allSatellitesList, satellite];
-};
-SatellitesManager.removeSatelliteFromAllGroups = (satId, allGroups) => {
-    const clone = allGroups.slice(0);
-    clone.forEach((el) => {
+      }
+      // this.findSatellite(satelliteId).setPoweredStatus(status);
+    };
+    this.turnOffAllSatellites = () => {
+      this.allSatellitesList.forEach((sat) => sat.setPoweredStatus("off"));
+    };
+    this.turnOnAllSatellites = () => {
+      this.allSatellitesList.forEach((sat) => sat.setPoweredStatus("on"));
+    };
+    // MANAGEMENT
+    // L
+    this.createNewSatellite = (locationObj) => {
+      const newSat = new Satellite_js_1.default(locationObj);
+      this.allSatellitesList.push(newSat);
+    };
+    this.addSattelliteToList = (satellite) => {
+      this.allSatellitesList.push(satellite);
+    };
+    this.removeSatelliteFromAllGroups = (satId, allGroups) => {
+      const clone = allGroups.slice(0);
+      clone.forEach((el) => {
         if (el.isSatelliteIdInGroup(satId)) {
-            el.removeFromGroup(satId);
+          el.removeFromGroup(satId);
         }
-    });
-};
-SatellitesManager.removeSatelliteFromList = (satellite, allGroups) => {
-    Validator_js_1.default.validateSatellite(satellite);
-    if (!Validator_js_1.default.findByIdInArrayOfIds(_a.allSatellitesList, satellite.id)) {
+      });
+    };
+    // invalidate
+    this.removeSatelliteFromList = (satelliteId) => {
+      if (
+        !Validator_js_1.default.findByIdInArrayOfIds(
+          this.allSatellitesList,
+          satelliteId
+        )
+      ) {
         throw "Satellite not found in the list";
+      }
+      const map = new Map();
+      map.delete(satelliteId);
+      this.allSatellitesList = this.allSatellitesList.filter(
+        (el) => el.id !== satelliteId
+      );
+    };
+  }
+  static getInstance() {
+    if (!SatellitesManager.instance) {
+      this.instance = new SatellitesManager();
     }
-    _a.allSatellitesList = _a.allSatellitesList.filter((el) => el.id !== satellite.id);
-    _a.removeSatelliteFromAllGroups(satellite.id, allGroups);
-};
-SatellitesManager.addSatelliteToGroup = (satellite, groupId, groupList) => {
-    Validator_js_1.default.validateSatellite(satellite);
-    // find group by id
-    const groupToAdd = groupList.find((el) => el.id === groupId);
-    console.log("GROUP TO ADD", groupToAdd);
-    if (groupToAdd)
-        groupToAdd.addToGroup(satellite.id);
-};
-SatellitesManager.removeSatelliteFromGroup = (satelliteId, groupId, groupList) => {
-    // find group by id
-    const groupToRemoveFrom = groupList.find((el) => el.id === groupId);
-    if (groupToRemoveFrom)
-        groupToRemoveFrom.removeFromGroup(satelliteId);
-};
+    // this.instance??
+    return this.instance;
+  }
+  // ********** MANAGEMENT **********
+  // SETTERS
+  // satelliteId: string,
+  // property: number,
+  // newProperty: number
+  modifyProperty({ property, value, id }) {
+    const modifier = this.modifiers[property];
+    modifier(value, id);
+  }
+}
+
+exports.default = SatellitesManager;
 // SatellitesManager.getInstance().getSatellitesGroups();
 // // SatellitesManager.getInstance()
 // SatellitesManager.getInstance().createNewSatelliteGroup("TEST");

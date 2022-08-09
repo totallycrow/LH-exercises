@@ -12,7 +12,7 @@ export default class Overlord extends Operator {
   ) => {
     // Property 'setOnOffStatus' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setOnOffStatus' instead?ts(2576)
 
-    SatellitesManager.setOnOffStatus(satelliteId, newStatus);
+    this.satellitesManager.setOnOffStatus(satelliteId, newStatus);
   };
 
   groupShutDown = (groupId: string) => {
@@ -20,10 +20,10 @@ export default class Overlord extends Operator {
   };
 
   systemShutDown = () => {
-    SatellitesManager.turnOffAllSatellites();
+    this.satellitesManager.turnOffAllSatellites();
   };
   systemPowerOn = () => {
-    SatellitesManager.turnOnAllSatellites();
+    this.satellitesManager.turnOnAllSatellites();
   };
 }
 

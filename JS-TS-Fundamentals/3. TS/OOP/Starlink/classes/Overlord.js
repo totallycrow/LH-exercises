@@ -4,22 +4,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Operator_js_1 = __importDefault(require("./Operator.js"));
-const SatellitesManager_js_1 = __importDefault(require("./SatellitesManager.js"));
 class Overlord extends Operator_js_1.default {
     constructor(name, surname) {
         super(name, surname);
         this.setIndividualSatellitePowerStatus = (satelliteId, newStatus) => {
             // Property 'setOnOffStatus' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setOnOffStatus' instead?ts(2576)
-            SatellitesManager_js_1.default.setOnOffStatus(satelliteId, newStatus);
+            this.satellitesManager.setOnOffStatus(satelliteId, newStatus);
         };
         this.groupShutDown = (groupId) => {
             this.setGroupProperty("poweredStatus", groupId, "off");
         };
         this.systemShutDown = () => {
-            SatellitesManager_js_1.default.turnOffAllSatellites();
+            this.satellitesManager.turnOffAllSatellites();
         };
         this.systemPowerOn = () => {
-            SatellitesManager_js_1.default.turnOnAllSatellites();
+            this.satellitesManager.turnOnAllSatellites();
         };
     }
 }

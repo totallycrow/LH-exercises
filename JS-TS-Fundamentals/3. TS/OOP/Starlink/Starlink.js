@@ -22,3 +22,15 @@ import Overlord from "./classes/Overlord.js";
 
 const operator = new Operator("John", "Wayne");
 const overlord = new Overlord("Max", "Payne");
+
+// CR NOTES
+
+// INTERFACE WITH SINGLETON? -> GROUPMANAGER
+
+// PRIVATE WITH INTERFACE? -> GROUPMANAGER
+// private' modifier cannot appear on a type member.ts(1070)
+
+// should not define private values in interface, but getter methods instead? -> GroupOfSatellites
+
+// MAPS?
+// -> sets for Satellites IDs

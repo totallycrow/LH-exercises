@@ -1,42 +1,44 @@
 // @ts-ignore
+import Group from "../../AddressBook-medium/classes/group.js";
+// @ts-ignore
 import Validator from "../../Validator.js";
 import GroupOfSatellites from "./GroupOfSatellites.js";
 
-export default class GroupManager {
-  // allSatellitesGroups: GroupOfSatellites[];
-  // constructor() {
-  //   this.allSatellitesGroups = [];
-  // }
-  // static _instance;
+type TGetInstance = () => GroupManager;
 
-  // static getInstance() {
-  //   if (this._instance === undefined) {
-  //     this._instance = new GroupManager();
-  //     return this._instance;
-  //   }
-  //   return this._instance;
-  // }
+// INTERFACE WITH SINGLETON?
+// cant' use public static
+interface IGroupsManager {
+  getInstance(): TGetInstance;
+  getSatellitesGroups(): void;
+  getSatelliteIdsInGroup(id: string): void;
+  addSatelliteIdToGroup(satid: string, groupid: string): void;
+  createNewSatelliteGroup(n: string): void;
+  removeSatelliteGroup(gid: string): void;
+}
 
+// ??
+// Class 'GroupManager' incorrectly implements interface 'IGroupsManager'.
+// Property 'getInstance' is missing in type 'GroupManager' but required in type 'IGroupsManager'.ts(2420)
+
+export default class GroupManager implements IGroupsManager {
   private static instance: GroupManager;
-
-  static allSatellitesGroups: GroupOfSatellites[] = [];
-
+  private allSatellitesGroups: GroupOfSatellites[] = [];
   private constructor() {}
 
   public static getInstance(): GroupManager {
     if (!this.instance) {
       this.instance = new GroupManager();
     }
-    // this.instance??
     return this.instance;
   }
 
   // ********** GETTERS **********
-  static getSatellitesGroups = () => {
+  getSatellitesGroups = () => {
     return this.allSatellitesGroups;
   };
 
-  static getSatelliteIdsInGroup = (groupId: string) => {
+  getSatelliteIdsInGroup = (groupId: string) => {
     const group = this.allSatellitesGroups.find((el) => el.id === groupId);
     console.log("TEST", group);
     if (group) {
@@ -46,7 +48,7 @@ export default class GroupManager {
 
   // ********** MANAGE GROUPS **********
 
-  static addSatelliteIdToGroup = (satelliteId: string, groupId: string) => {
+  addSatelliteIdToGroup = (satelliteId: string, groupId: string) => {
     const groupToAdd = this.allSatellitesGroups.find((el) => el.id === groupId);
 
     if (typeof groupToAdd === "undefined") {
@@ -55,14 +57,14 @@ export default class GroupManager {
     groupToAdd.addToGroup(satelliteId);
   };
 
-  static createNewSatelliteGroup = (name: string) => {
+  createNewSatelliteGroup = (name: string) => {
     Validator.validateString(name);
     const newGroup = new GroupOfSatellites(name);
     this.allSatellitesGroups.push(newGroup);
     return newGroup;
   };
 
-  static removeSatelliteGroup = (groupId: string) => {
+  removeSatelliteGroup = (groupId: string) => {
     Validator.validateString(groupId);
 
     this.allSatellitesGroups = this.allSatellitesGroups.filter(

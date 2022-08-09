@@ -17,16 +17,16 @@ class Operator {
         // this.satellitesManager. doesnt work??
         // Property 'setHeight' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setHeight' instead?ts(2576)
         this.setIndividualSatelliteHeight = (satelliteId, newHeight) => {
-            SatellitesManager_js_1.default.setHeight(satelliteId, newHeight);
+            this.satellitesManager.setHeight(satelliteId, newHeight);
         };
         this.setIndividualSatelliteCoordinates = (satelliteId, newCoordinates) => {
-            SatellitesManager_js_1.default.setCoordinates(satelliteId, newCoordinates);
+            SatellitesManager_js_1.default.getInstance().setCoordinates(satelliteId, newCoordinates);
         };
         this.setIndividualSatelliteSailStatus = (satelliteId, newStatus) => {
-            SatellitesManager_js_1.default.setSailStatus(satelliteId, newStatus);
+            SatellitesManager_js_1.default.getInstance().setSailStatus(satelliteId, newStatus);
         };
         this.setIndividualSatelliteEmitterStatus = (satelliteId, newStatus) => {
-            SatellitesManager_js_1.default.setEmitterStatus(satelliteId, newStatus);
+            SatellitesManager_js_1.default.getInstance().setEmitterStatus(satelliteId, newStatus);
         };
         // *************************************************
         // ********** MANAGE GROUPS OF SATELLITES **********
@@ -44,11 +44,13 @@ class Operator {
         // *** MODIFIER
         this.setSatelliteGroupSignalEmitterStatus = (groupId, newStatus) => {
             const satelliteIds = GroupManager_js_1.default.getSatelliteIdsInGroup(groupId);
-            const satelliteListClone = SatellitesManager_js_1.default.allSatellitesList.slice(0);
+            const satelliteListClone = SatellitesManager_js_1.default.getInstance()
+                .getSatellitesList()
+                .slice(0);
             if (satelliteIds) {
                 satelliteListClone.forEach((el) => {
                     if (satelliteIds.some((id) => el.id === id)) {
-                        SatellitesManager_js_1.default.modifyProperty({
+                        SatellitesManager_js_1.default.getInstance().modifyProperty({
                             property: "emitterStatus",
                             value: newStatus,
                             id: el.id,
@@ -70,7 +72,9 @@ class Operator {
                 throw new Error("Invalid new value");
             }
             const satelliteIds = GroupManager_js_1.default.getSatelliteIdsInGroup(groupId);
-            const satelliteListClone = SatellitesManager_js_1.default.allSatellitesList.slice(0);
+            const satelliteListClone = this.satellitesManager
+                .getSatellitesList()
+                .slice(0);
             switch (key) {
                 case "height":
                     if (typeof newValue !== "number") {

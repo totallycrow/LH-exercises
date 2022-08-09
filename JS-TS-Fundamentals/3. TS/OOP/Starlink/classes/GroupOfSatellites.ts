@@ -4,18 +4,31 @@ import Validator from "../../Validator.js";
 import Utilities from "../../Utilities.js";
 import Satellite from "./Satellite.js";
 
-export default class GroupOfSatellites {
+type TSetters = (val: string) => void;
+
+interface IGroups {
+  readonly id: string;
+  setGroupName: TSetters;
+  addToGroup: TSetters;
+  removeFromGroup: TSetters;
+  getGroupSatellitesList(): Set<string>;
+  isSatelliteIdInGroup: TSetters;
+}
+
+export default class GroupOfSatellites implements IGroups {
   // Zawiera ewidencję satelit które znajdują się w grupie
-  groupName: string;
-  id: string;
-  satellitesList: string[];
+  private groupName: string;
+  readonly id;
+  private satellitesList: Set<string>;
   constructor(name: string) {
     this.groupName = name;
     this.id = Utilities.idGenerator();
-    this.satellitesList = [];
+    this.satellitesList = new Set();
   }
 
-  setGroupName = (name: string) => {
+  // Parameter 'name' implicitly has an 'any' type.ts(7006
+  // IF NO TYPE IE NAME: STRING
+  setGroupName: TSetters = (name) => {
     Validator.validateString(name);
     this.groupName = name;
   };
@@ -26,16 +39,14 @@ export default class GroupOfSatellites {
     if (Validator.findByIdInArrayOfIds(this.satellitesList, satelliteId)) {
       throw "Satellite already exists in the group";
     }
-    this.satellitesList.push(satelliteId);
+    this.satellitesList.add(satelliteId);
   };
 
   removeFromGroup = (satelliteId: string) => {
     if (!Validator.findByIdInArrayOfIds(this.satellitesList, satelliteId)) {
       throw "Satellite not found in the group";
     }
-    this.satellitesList = this.satellitesList.filter(
-      (el) => el !== satelliteId
-    );
+    this.satellitesList.delete(satelliteId);
   };
 
   getGroupSatellitesList = () => {
@@ -45,6 +56,6 @@ export default class GroupOfSatellites {
   isSatelliteIdInGroup = (satelliteId: string) => {
     Validator.validateString(satelliteId);
     // Validator.validateSatellite(satellite);
-    return this.satellitesList.some((el) => el === satelliteId);
+    return this.satellitesList.has(satelliteId);
   };
 }

@@ -7,19 +7,36 @@ import Utilities from "../../Utilities.js";
 import Validator from "../../Validator.js";
 import { ICoordinates } from "./Location.js";
 
-export default class Operator {
-  // Ma miec: imie, nazwisko, uuid
-  // Ma umożliwiać:
-  // - zmianę wysokości i wpółrzędnych pojedynczych satelit
-  // - zmianę wysokości i wpółrzędnychcałej grupy
-  // - otwieranie i składanie żagli słonecznych dla pojedynczego egzemplarza jak i całej grupy
-  // - właczanie i wyłączanie sygnału nadawczego dla pojedynczych satelit oraz grup
-  // - może tworzyć nowe grupy
-  name: string;
-  surname: string;
+interface IOperator {
   satellitesManager: SatellitesManager;
   groupManager: GroupManager;
-  id: string;
+  readonly id: string;
+  getName(): string;
+  getSurname(): string;
+  removeSatelliteFromAllGroups(id: string): void;
+  setIndividualSatelliteHeight(val: string, h: number): void;
+  setIndividualSatelliteCoordinates(val: string, crd: ICoordinates): void;
+  setIndividualSatelliteSailStatus(val: string, s: string): void;
+  setIndividualSatelliteEmitterStatus(val: string, s: string): void;
+  createNewGroup(val: string): void;
+  removeGroup(val: string): void;
+  setSatelliteGroupHeight(val: string, h: number): void;
+  setSatelliteGroupSignalEmitterStatus(val: string, s: string): void;
+  setSatelliteGroupCoordinates(val: string, crd: ICoordinates): void;
+  setSatelliteGroupSailsStatus(val: string, s: string): void;
+  setGroupProperty(
+    key: string,
+    groupId: string,
+    newValue: number | string | ICoordinates
+  ): void;
+}
+
+export default class Operator implements IOperator {
+  private name: string;
+  private surname: string;
+  satellitesManager: SatellitesManager;
+  groupManager: GroupManager;
+  readonly id: string;
 
   constructor(name: string, surname: string) {
     this.satellitesManager = SatellitesManager.getInstance();
@@ -29,12 +46,30 @@ export default class Operator {
     this.surname = surname;
   }
 
+  // GETTERS
+  getName = () => {
+    return this.name;
+  };
+  getSurname = () => {
+    return this.surname;
+  };
+
   // **************************************************
   // ********** MANAGE INDIVIDUAL SATELLITES **********
   // **************************************************
 
-  // this.satellitesManager. doesnt work??
-  // Property 'setHeight' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setHeight' instead?ts(2576)
+  // ****** **** ****** ******* ****** ****** ******
+  // EDITED : MOVE REMOVING SATELLITES UP TO THE OPERATOR
+
+  removeSatelliteFromAllGroups = (satId: string) => {
+    const clone = this.groupManager.getSatellitesGroups().slice(0);
+
+    clone.forEach((el) => {
+      if (el.isSatelliteIdInGroup(satId)) {
+        el.removeFromGroup(satId);
+      }
+    });
+  };
 
   setIndividualSatelliteHeight = (satelliteId: string, newHeight: number) => {
     this.satellitesManager.setHeight(satelliteId, newHeight);
@@ -66,11 +101,11 @@ export default class Operator {
   // *************************************************
 
   createNewGroup = (name: string) => {
-    return GroupManager.createNewSatelliteGroup(name);
+    return this.groupManager.createNewSatelliteGroup(name);
   };
 
   removeGroup = (groupId: string) => {
-    GroupManager.removeSatelliteGroup(groupId);
+    this.groupManager.removeSatelliteGroup(groupId);
   };
 
   // *** SWITCH
@@ -84,12 +119,14 @@ export default class Operator {
     groupId: string,
     newStatus: string
   ) => {
-    const satelliteIds = GroupManager.getSatelliteIdsInGroup(groupId);
-    const satelliteListClone = SatellitesManager.getInstance().getSatellitesList().slice(0);
+    const satelliteIds = this.groupManager.getSatelliteIdsInGroup(groupId);
+    const satelliteListClone = this.satellitesManager
+      .getSatellitesList()
+      .slice(0);
 
     if (satelliteIds) {
       satelliteListClone.forEach((el) => {
-        if (satelliteIds.some((id) => el.id === id)) {
+        if (satelliteIds.has(el.id)) {
           SatellitesManager.getInstance().modifyProperty({
             property: "emitterStatus",
             value: newStatus,
@@ -123,8 +160,10 @@ export default class Operator {
       throw new Error("Invalid new value");
     }
 
-    const satelliteIds = GroupManager.getSatelliteIdsInGroup(groupId);
-    const satelliteListClone = SatellitesManager.allSatellitesList.slice(0);
+    const satelliteIds = this.groupManager.getSatelliteIdsInGroup(groupId);
+    const satelliteListClone = this.satellitesManager
+      .getSatellitesList()
+      .slice(0);
 
     switch (key) {
       case "height":
@@ -132,7 +171,7 @@ export default class Operator {
           throw new Error("Invalid new value");
         }
         satelliteListClone.forEach((el) => {
-          if (satelliteIds && satelliteIds.some((id) => el.id === id)) {
+          if (satelliteIds && satelliteIds.has(el.id)) {
             el.setHeight(newValue);
           }
         });
@@ -143,7 +182,7 @@ export default class Operator {
           throw new Error("Invalid new value");
         }
         satelliteListClone.forEach((el) => {
-          if (satelliteIds && satelliteIds.some((id) => el.id === id)) {
+          if (satelliteIds && satelliteIds.has(el.id)) {
             el.setSolarSailStatus(newValue);
           }
         });
@@ -154,7 +193,7 @@ export default class Operator {
           if (
             typeof newValue === "string" &&
             satelliteIds &&
-            satelliteIds.some((id) => el.id === id)
+            satelliteIds.has(el.id)
           ) {
             el.setSignalEmitterStatus(newValue);
           }
@@ -166,7 +205,7 @@ export default class Operator {
           if (
             satelliteIds &&
             typeof newValue === "string" &&
-            satelliteIds.some((id) => el.id === id)
+            satelliteIds.has(el.id)
           ) {
             el.setPoweredStatus(newValue);
           }
@@ -178,7 +217,7 @@ export default class Operator {
           if (
             satelliteIds &&
             typeof newValue === "object" &&
-            satelliteIds.some((id) => el.id === id)
+            satelliteIds.has(el.id)
           ) {
             el.setCoordinates(newValue);
           }

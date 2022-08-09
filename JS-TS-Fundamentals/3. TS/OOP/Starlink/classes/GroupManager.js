@@ -13,7 +13,6 @@ class GroupManager {
         if (!this.instance) {
             this.instance = new GroupManager();
         }
-        // this.instance??
         return this.instance;
     }
 }
