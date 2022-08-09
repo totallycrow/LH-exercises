@@ -1,3 +1,4 @@
+// @ts-nocheck
 // *********************************************************
 // *********************** USER ****************************
 // *********************************************************
@@ -9,11 +10,9 @@ interface IUser {
   name: string;
   surname: string;
   dob: string | Date;
-  email: string;
   access: string;
-
-  setPassword(): TSetter
-  setEmail
+  password: string;  
+  email: string  
 }
 
 interface adminAndUser {
@@ -28,8 +27,8 @@ class User implements IUser {
   readonly surname: string;
   readonly dob: string | Date;
   private password: string;
-  readonly email: string;
-  readonly access: string;
+  private email: string;
+  private access: string;
 
   constructor(user: IUser, access: string, id = "") {
     this.id = id;
@@ -41,7 +40,7 @@ class User implements IUser {
     this.access = access;
   }
 
-  setPassword: TSetter = (newPassword) => {
+  setPassword : TSetter = (newPassword) => {
     this.password = newPassword;
   };
 
@@ -63,7 +62,7 @@ class App {
 
   private constructor() {}
 
-  public static getInstance(): IApp {
+  public static getInstance() {
     if (!this.instance) {
       this.instance = new App();
     }

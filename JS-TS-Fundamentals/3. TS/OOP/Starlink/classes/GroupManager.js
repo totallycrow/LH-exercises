@@ -2,13 +2,46 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore
 const Validator_js_1 = __importDefault(require("../../Validator.js"));
 const GroupOfSatellites_js_1 = __importDefault(require("./GroupOfSatellites.js"));
+// ??
+// Class 'GroupManager' incorrectly implements interface 'IGroupsManager'.
+// Property 'getInstance' is missing in type 'GroupManager' but required in type 'IGroupsManager'.ts(2420)
 class GroupManager {
-    constructor() { }
+    constructor() {
+        this.allSatellitesGroups = [];
+        // ********** GETTERS **********
+        this.getSatellitesGroups = () => {
+            return this.allSatellitesGroups;
+        };
+        this.getSatelliteIdsInGroup = (groupId) => {
+            const group = this.allSatellitesGroups.find((el) => el.id === groupId);
+            console.log("TEST", group);
+            if (group) {
+                return group.getGroupSatellitesList();
+            }
+        };
+        // ********** MANAGE GROUPS **********
+        this.addSatelliteIdToGroup = (satelliteId, groupId) => {
+            const groupToAdd = this.allSatellitesGroups.find((el) => el.id === groupId);
+            if (typeof groupToAdd === "undefined") {
+                throw new Error("Group not found");
+            }
+            groupToAdd.addToGroup(satelliteId);
+        };
+        this.createNewSatelliteGroup = (name) => {
+            Validator_js_1.default.validateString(name);
+            const newGroup = new GroupOfSatellites_js_1.default(name);
+            this.allSatellitesGroups.push(newGroup);
+            return newGroup;
+        };
+        this.removeSatelliteGroup = (groupId) => {
+            Validator_js_1.default.validateString(groupId);
+            this.allSatellitesGroups = this.allSatellitesGroups.filter((el) => el.id !== groupId);
+        };
+    }
     static getInstance() {
         if (!this.instance) {
             this.instance = new GroupManager();
@@ -17,37 +50,6 @@ class GroupManager {
     }
 }
 exports.default = GroupManager;
-_a = GroupManager;
-GroupManager.allSatellitesGroups = [];
-// ********** GETTERS **********
-GroupManager.getSatellitesGroups = () => {
-    return _a.allSatellitesGroups;
-};
-GroupManager.getSatelliteIdsInGroup = (groupId) => {
-    const group = _a.allSatellitesGroups.find((el) => el.id === groupId);
-    console.log("TEST", group);
-    if (group) {
-        return group.getGroupSatellitesList();
-    }
-};
-// ********** MANAGE GROUPS **********
-GroupManager.addSatelliteIdToGroup = (satelliteId, groupId) => {
-    const groupToAdd = _a.allSatellitesGroups.find((el) => el.id === groupId);
-    if (typeof groupToAdd === "undefined") {
-        throw new Error("Group not found");
-    }
-    groupToAdd.addToGroup(satelliteId);
-};
-GroupManager.createNewSatelliteGroup = (name) => {
-    Validator_js_1.default.validateString(name);
-    const newGroup = new GroupOfSatellites_js_1.default(name);
-    _a.allSatellitesGroups.push(newGroup);
-    return newGroup;
-};
-GroupManager.removeSatelliteGroup = (groupId) => {
-    Validator_js_1.default.validateString(groupId);
-    _a.allSatellitesGroups = _a.allSatellitesGroups.filter((el) => el.id !== groupId);
-};
 // ******** TESTING **********
 // const testSat1 = new Satellite({
 //   height: 120,

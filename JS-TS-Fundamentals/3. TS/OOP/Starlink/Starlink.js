@@ -29,7 +29,6 @@ const overlord = new Overlord("Max", "Payne");
 
 // PRIVATE WITH INTERFACE? -> GROUPMANAGER
 // private' modifier cannot appear on a type member.ts(1070)
-
 // should not define private values in interface, but getter methods instead? -> GroupOfSatellites
 
 // MAPS?

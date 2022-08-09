@@ -11,11 +11,26 @@ const Utilities_js_1 = __importDefault(require("../../Utilities.js"));
 const Validator_js_1 = __importDefault(require("../../Validator.js"));
 class Operator {
     constructor(name, surname) {
+        // GETTERS
+        this.getName = () => {
+            return this.name;
+        };
+        this.getSurname = () => {
+            return this.surname;
+        };
         // **************************************************
         // ********** MANAGE INDIVIDUAL SATELLITES **********
         // **************************************************
-        // this.satellitesManager. doesnt work??
-        // Property 'setHeight' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setHeight' instead?ts(2576)
+        // ****** **** ****** ******* ****** ****** ******
+        // EDITED : MOVE REMOVING SATELLITES UP TO THE OPERATOR
+        this.removeSatelliteFromAllGroups = (satId) => {
+            const clone = this.groupManager.getSatellitesGroups().slice(0);
+            clone.forEach((el) => {
+                if (el.isSatelliteIdInGroup(satId)) {
+                    el.removeFromGroup(satId);
+                }
+            });
+        };
         this.setIndividualSatelliteHeight = (satelliteId, newHeight) => {
             this.satellitesManager.setHeight(satelliteId, newHeight);
         };
@@ -32,10 +47,10 @@ class Operator {
         // ********** MANAGE GROUPS OF SATELLITES **********
         // *************************************************
         this.createNewGroup = (name) => {
-            return GroupManager_js_1.default.createNewSatelliteGroup(name);
+            return this.groupManager.createNewSatelliteGroup(name);
         };
         this.removeGroup = (groupId) => {
-            GroupManager_js_1.default.removeSatelliteGroup(groupId);
+            this.groupManager.removeSatelliteGroup(groupId);
         };
         // *** SWITCH
         this.setSatelliteGroupHeight = (groupId, newHeight) => {
@@ -43,13 +58,13 @@ class Operator {
         };
         // *** MODIFIER
         this.setSatelliteGroupSignalEmitterStatus = (groupId, newStatus) => {
-            const satelliteIds = GroupManager_js_1.default.getSatelliteIdsInGroup(groupId);
-            const satelliteListClone = SatellitesManager_js_1.default.getInstance()
+            const satelliteIds = this.groupManager.getSatelliteIdsInGroup(groupId);
+            const satelliteListClone = this.satellitesManager
                 .getSatellitesList()
                 .slice(0);
             if (satelliteIds) {
                 satelliteListClone.forEach((el) => {
-                    if (satelliteIds.some((id) => el.id === id)) {
+                    if (satelliteIds.has(el.id)) {
                         SatellitesManager_js_1.default.getInstance().modifyProperty({
                             property: "emitterStatus",
                             value: newStatus,
@@ -71,7 +86,7 @@ class Operator {
             if (typeof newValue !== "string" && typeof newValue !== "number") {
                 throw new Error("Invalid new value");
             }
-            const satelliteIds = GroupManager_js_1.default.getSatelliteIdsInGroup(groupId);
+            const satelliteIds = this.groupManager.getSatelliteIdsInGroup(groupId);
             const satelliteListClone = this.satellitesManager
                 .getSatellitesList()
                 .slice(0);
@@ -81,7 +96,7 @@ class Operator {
                         throw new Error("Invalid new value");
                     }
                     satelliteListClone.forEach((el) => {
-                        if (satelliteIds && satelliteIds.some((id) => el.id === id)) {
+                        if (satelliteIds && satelliteIds.has(el.id)) {
                             el.setHeight(newValue);
                         }
                     });
@@ -91,7 +106,7 @@ class Operator {
                         throw new Error("Invalid new value");
                     }
                     satelliteListClone.forEach((el) => {
-                        if (satelliteIds && satelliteIds.some((id) => el.id === id)) {
+                        if (satelliteIds && satelliteIds.has(el.id)) {
                             el.setSolarSailStatus(newValue);
                         }
                     });
@@ -100,7 +115,7 @@ class Operator {
                     satelliteListClone.forEach((el) => {
                         if (typeof newValue === "string" &&
                             satelliteIds &&
-                            satelliteIds.some((id) => el.id === id)) {
+                            satelliteIds.has(el.id)) {
                             el.setSignalEmitterStatus(newValue);
                         }
                     });
@@ -109,7 +124,7 @@ class Operator {
                     satelliteListClone.forEach((el) => {
                         if (satelliteIds &&
                             typeof newValue === "string" &&
-                            satelliteIds.some((id) => el.id === id)) {
+                            satelliteIds.has(el.id)) {
                             el.setPoweredStatus(newValue);
                         }
                     });
@@ -118,7 +133,7 @@ class Operator {
                     satelliteListClone.forEach((el) => {
                         if (satelliteIds &&
                             typeof newValue === "object" &&
-                            satelliteIds.some((id) => el.id === id)) {
+                            satelliteIds.has(el.id)) {
                             el.setCoordinates(newValue);
                         }
                     });
