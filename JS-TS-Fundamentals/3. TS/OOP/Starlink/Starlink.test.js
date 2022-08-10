@@ -3,6 +3,9 @@ import Overlord from "./classes/Overlord.js";
 import SatellitesManager from "./classes/SatellitesManager.js";
 import GroupManager from "./classes/GroupManager.js";
 
+// imperatywne -> if i add 10 to 3 so i get 13
+
+// deklaratywne if i add some numbers i will get some sum
 describe("Add many satelites, divide them into groups and set height", () => {
   // Reset lists before each test
   beforeAll(() => {
@@ -29,7 +32,7 @@ describe("Add many satelites, divide them into groups and set height", () => {
   const operator = new Operator("Tom", "Jerry");
   const overlord = new Overlord("Robert", "Maklowicz");
 
-  test("Overlord created four satellites", () => {
+  test("Overlord created some satellites", () => {
     const sateliteA = overlord.satellitesManager.createNewSatellite({
       height: 500,
       coordinates: { x: "500.50", y: "500.60" },
@@ -49,13 +52,13 @@ describe("Add many satelites, divide them into groups and set height", () => {
     expect(SatellitesManager.getInstance().allSatellitesList.length).toBe(4);
   });
 
-  test("Overlord created two groups", () => {
+  test("Overlord created some groups", () => {
     overlord.groupManager.createNewSatelliteGroup("Overlord-Group-1");
     overlord.groupManager.createNewSatelliteGroup("Overlord-Group-2");
     expect(GroupManager.getInstance().allSatellitesGroups.length).toBe(2);
   });
 
-  test("Overlord split the four satellites into two groups", () => {
+  test("Overlord split the satellites into groups", () => {
     const groupA = overlord.groupManager.getSatellitesGroups()[0];
     const groupB = overlord.groupManager.getSatellitesGroups()[1];
     const allGroups = GroupManager.getInstance().getSatellitesGroups();
@@ -93,7 +96,7 @@ describe("Add many satelites, divide them into groups and set height", () => {
     ).toBe(2);
   });
 
-  test("Overlord set the height of the first group of Satellites to 1020", () => {
+  test("Overlord is able to set the height of some group", () => {
     // GIVEN
     const givenMockedNumber = 1020;
     const firstGroup = overlord.groupManager.getSatellitesGroups()[0];
@@ -107,7 +110,7 @@ describe("Add many satelites, divide them into groups and set height", () => {
     ).toBe(1020);
   });
 
-  test("Overlord set the emitter of the second group of Satellites on", () => {
+  test("Overlord set the emitter of a group of Satellites on", () => {
     // GIVEN
     const secondGroup = overlord.groupManager.getSatellitesGroups()[1];
 
@@ -127,7 +130,7 @@ describe("Add many satelites, divide them into groups and set height", () => {
     ).toBe("on");
   });
 
-  test("Overlord turned the second group off", () => {
+  test("Overlord turned group off", () => {
     const secondGroup = overlord.groupManager.getSatellitesGroups()[1];
 
     overlord.groupShutDown(secondGroup.id);

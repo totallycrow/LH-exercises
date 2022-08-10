@@ -16,34 +16,14 @@
 // ******************************
 type TArrayOfPromises<T> = Array<Promise<T>>;
 
-const p1 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve("foo1");
-  }, 800);
-});
 
-const p2 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve("foo2");
-  }, 600);
-});
-
-const p3 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve("foo3");
-  }, 900);
-});
-
-const array = [p1, p3, p2];
-
-// ****************************************
 
 // ********** PROMISE ALL **********
 // PROMISES
 
-const promiseAll = <T>(arrayOfPromise: TArrayOfPromises<T>) => {
+
+const promiseAll = <T>(arrayOfPromise: TArrayOfPromises<T>): Promise<T[]> => {
   return new Promise<Array<T>>((resolve, reject) => {
-    // ...
     let result: Array<T> = [];
     let counter = 0;
 
@@ -76,11 +56,12 @@ async function asyncPromiseAll<T>(arrayOfPromise: TArrayOfPromises<T>) {
     let result: Array<T> = [];
 
     arrayOfPromise.forEach(async function (el) {
-      await el
-        .then((res) => {
-          result.push(res);
-        })
-        .catch((err) => reject(err));
+      try {
+       const res = await el
+       result.push(res);
+      } catch(err) {
+        reject(err)
+      }
     });
     resolve(result);
   });
@@ -204,3 +185,25 @@ async function asyncPromiseIgnoreErrorsl<T>(
     resolve(result);
   });
 }
+
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("foo1");
+  }, 800);
+});
+
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("foo2");
+  }, 600);
+});
+
+const p3 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("foo3");
+  }, 900);
+});
+
+const array = [p1, p3, p2];
+
+// ****************************************

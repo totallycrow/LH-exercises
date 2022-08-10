@@ -26,7 +26,7 @@ export default class GroupManager implements IGroupsManager {
   private allSatellitesGroups: GroupOfSatellites[] = [];
   private constructor() {}
 
-  public static getInstance(): GroupManager {
+  public static getInstance(): IGroupsManager {
     if (!this.instance) {
       this.instance = new GroupManager();
     }

@@ -34,8 +34,8 @@ interface IOperator {
 export default class Operator implements IOperator {
   private name: string;
   private surname: string;
-  satellitesManager: SatellitesManager;
-  groupManager: GroupManager;
+  private satellitesManager: SatellitesManager;
+  private groupManager: GroupManager;
   readonly id: string;
 
   constructor(name: string, surname: string) {
@@ -61,7 +61,7 @@ export default class Operator implements IOperator {
   // ****** **** ****** ******* ****** ****** ******
   // EDITED : MOVE REMOVING SATELLITES UP TO THE OPERATOR
 
-  removeSatelliteFromAllGroups = (satId: string) => {
+ removeSatelliteFromAllGroups = (satId: string) => {
     const clone = this.groupManager.getSatellitesGroups().slice(0);
 
     clone.forEach((el) => {

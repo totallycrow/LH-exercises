@@ -19,6 +19,8 @@ export default class GroupOfSatellites implements IGroups {
   // Zawiera ewidencję satelit które znajdują się w grupie
   private groupName: string;
   readonly id;
+  
+  // SET INSTEAD OF ARRAY?
   private satellitesList: Set<string>;
   constructor(name: string) {
     this.groupName = name;
