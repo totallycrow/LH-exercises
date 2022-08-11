@@ -14,28 +14,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const p1 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("foo1");
-    }, 800);
-});
-const p2 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("foo2");
-    }, 600);
-});
-const p3 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("foo3");
-    }, 900);
-});
-const array = [p1, p3, p2];
-// ****************************************
 // ********** PROMISE ALL **********
 // PROMISES
 const promiseAll = (arrayOfPromise) => {
     return new Promise((resolve, reject) => {
-        // ...
         let result = [];
         let counter = 0;
         arrayOfPromise.forEach((el, index) => {
@@ -65,11 +47,13 @@ function asyncPromiseAll(arrayOfPromise) {
             let result = [];
             arrayOfPromise.forEach(function (el) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    yield el
-                        .then((res) => {
+                    try {
+                        const res = yield el;
                         result.push(res);
-                    })
-                        .catch((err) => reject(err));
+                    }
+                    catch (err) {
+                        reject(err);
+                    }
                 });
             });
             resolve(result);
@@ -190,3 +174,20 @@ function asyncPromiseIgnoreErrorsl(arrayOfPromise) {
         });
     });
 }
+const p1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("foo1");
+    }, 800);
+});
+const p2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("foo2");
+    }, 600);
+});
+const p3 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("foo3");
+    }, 900);
+});
+const array = [p1, p3, p2];
+// ****************************************

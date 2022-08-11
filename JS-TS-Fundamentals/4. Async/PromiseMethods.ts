@@ -16,11 +16,8 @@
 // ******************************
 type TArrayOfPromises<T> = Array<Promise<T>>;
 
-
-
 // ********** PROMISE ALL **********
 // PROMISES
-
 
 const promiseAll = <T>(arrayOfPromise: TArrayOfPromises<T>): Promise<T[]> => {
   return new Promise<Array<T>>((resolve, reject) => {
@@ -57,10 +54,10 @@ async function asyncPromiseAll<T>(arrayOfPromise: TArrayOfPromises<T>) {
 
     arrayOfPromise.forEach(async function (el) {
       try {
-       const res = await el
-       result.push(res);
-      } catch(err) {
-        reject(err)
+        const res = await el;
+        result.push(res);
+      } catch (err) {
+        reject(err);
       }
     });
     resolve(result);
