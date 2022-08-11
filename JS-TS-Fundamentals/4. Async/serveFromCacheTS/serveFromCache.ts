@@ -11,12 +11,12 @@ import axios from "axios";
 const apiUrl = "https://www.googleapis.com/books/v1/volumes?q=";
 const query = "clarcson";
 
-const saveToJSON = async (data, location) => {
+const saveToJSON = async (data: JSON, location: string) => {
   fs.writeFileSync(location, JSON.stringify(data));
 };
 
-const functionWithFetch = async (url, query) => {
-  const URL = `${url}${query}`;
+const functionWithFetch = async (url: string, query: string) => {
+  const URL = `${apiUrl}${query}`;
   const FILE = `./cache/${query}.json`;
 
   if (fs.existsSync(FILE)) {
@@ -27,15 +27,16 @@ const functionWithFetch = async (url, query) => {
     console.log("NOT FOUND");
     let data = await fetch(URL).then((res) => res.json());
     console.log(data);
-    await saveToJSON(data, FILE);
+    // AS JSON, VS AXIOS NO AS JSON?
+    await saveToJSON(data as JSON, FILE);
     return data;
   }
 };
 
 console.log(await functionWithFetch(apiUrl, query));
 
-const functionWithAxios = async (url, query) => {
-  const URL = `${url}${query}`;
+const functionWithAxios = async (url: string, query: string) => {
+  const URL = `${apiUrl}${query}`;
   const FILE = `./cache/${query}.json`;
 
   if (fs.existsSync(FILE)) {

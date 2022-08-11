@@ -5,15 +5,6 @@
 // Wypracowanie funkcji promise.last(arrayOfPromise)
 // Wypracowanie funkcji promise.ignoreErrors(arrayOfPromise)
 // Wykonaj zadanie przy pomocy operatorów async/await i bez nich
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 // ********** PROMISE ALL **********
 // PROMISES
 const promiseAll = (arrayOfPromise) => {
@@ -31,41 +22,33 @@ const promiseAll = (arrayOfPromise) => {
         });
     });
 };
-function testfunc() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const test = yield promiseAll(array);
-        console.log(test);
-        return test;
-    });
+async function testfunc() {
+    const test = await promiseAll(array);
+    console.log(test);
+    return test;
 }
 testfunc();
 // ****************************************
 // ASYNC/AWAIT
-function asyncPromiseAll(arrayOfPromise) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            let result = [];
-            arrayOfPromise.forEach(function (el) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    try {
-                        const res = yield el;
-                        result.push(res);
-                    }
-                    catch (err) {
-                        reject(err);
-                    }
-                });
-            });
-            resolve(result);
+async function asyncPromiseAll(arrayOfPromise) {
+    return new Promise((resolve, reject) => {
+        let result = [];
+        arrayOfPromise.forEach(async function (el) {
+            try {
+                const res = await el;
+                result.push(res);
+            }
+            catch (err) {
+                reject(err);
+            }
         });
+        resolve(result);
     });
 }
-function testfuncAsync() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const test = yield asyncPromiseAll(array);
-        console.log(test);
-        return test;
-    });
+async function testfuncAsync() {
+    const test = await asyncPromiseAll(array);
+    console.log(test);
+    return test;
 }
 testfunc();
 // ****************************************
@@ -91,12 +74,10 @@ const promiseRace = (arrayOfPromise) => {
         });
     });
 };
-function testfRace() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const test = yield promiseRace(array);
-        console.log(test);
-        return test;
-    });
+async function testfRace() {
+    const test = await promiseRace(array);
+    console.log(test);
+    return test;
 }
 testfRace();
 // ****************************************
@@ -122,12 +103,10 @@ const promiseLast = (arrayOfPromise) => {
         });
     });
 };
-function testfLast() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const test = yield promiseLast(array);
-        console.log(test);
-        return test;
-    });
+async function testfLast() {
+    const test = await promiseLast(array);
+    console.log(test);
+    return test;
 }
 testfLast();
 // ****************************************
@@ -157,21 +136,17 @@ const promiseIgnoreErrors = (arrayOfPromise) => {
         });
     });
 };
-function asyncPromiseIgnoreErrorsl(arrayOfPromise) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            let result = [];
-            arrayOfPromise.forEach(function (el, index) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    yield el
-                        .then((res) => {
-                        result.push(res);
-                    })
-                        .catch((err) => console.log(err));
-                });
-            });
-            resolve(result);
+async function asyncPromiseIgnoreErrorsl(arrayOfPromise) {
+    return new Promise((resolve, reject) => {
+        let result = [];
+        arrayOfPromise.forEach(async function (el, index) {
+            await el
+                .then((res) => {
+                result.push(res);
+            })
+                .catch((err) => console.log(err));
         });
+        resolve(result);
     });
 }
 const p1 = new Promise((resolve, reject) => {

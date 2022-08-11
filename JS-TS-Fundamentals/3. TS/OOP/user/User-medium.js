@@ -3,19 +3,16 @@
 // *********************************************************
 // *********************** USER ****************************
 // *********************************************************
-var _a;
 // *** CLASS ***
 class User {
+    id;
+    name;
+    surname;
+    dob;
+    password;
+    email;
+    access;
     constructor(user, access, id = "") {
-        this.setPassword = (newPassword) => {
-            this.password = newPassword;
-        };
-        this.setEmail = (newEmail) => {
-            this.email = newEmail;
-        };
-        this.setAccess = (access) => {
-            this.access = access;
-        };
         this.id = id;
         this.name = user.name;
         this.surname = user.surname;
@@ -24,11 +21,22 @@ class User {
         this.email = user.email;
         this.access = access;
     }
+    setPassword = (newPassword) => {
+        this.password = newPassword;
+    };
+    setEmail = (newEmail) => {
+        this.email = newEmail;
+    };
+    setAccess = (access) => {
+        this.access = access;
+    };
 }
 // *********************************************************
 // *********************** APP *****************************
 // *********************************************************
 class App {
+    static instance;
+    static _userList = [];
     constructor() { }
     static getInstance() {
         if (!this.instance) {
@@ -36,6 +44,18 @@ class App {
         }
         return this.instance;
     }
+    static addUser = (user) => {
+        if (this._userList.find((el) => el.id === user.id))
+            throw new Error("User already in the list");
+        this._userList.push(user);
+    };
+    static createUser = (userObj, access) => {
+        const newUser = new User(userObj, access, idGenerator());
+        this._userList.push(newUser);
+    };
+    static createAdmin = (userObj) => {
+        this.createUser(userObj, "admin");
+    };
     static _getAdminAndUser(adminId, userId) {
         const clonedArray = this._userList.slice(0);
         const adminAndUser = clonedArray.reduce((acc, curr, i, arr) => {
@@ -63,42 +83,28 @@ class App {
         }
         return adminAndUser;
     }
+    //   ADMIN SET PASSWORD
+    static setUserPassword = (adminId, userId, newPass) => {
+        const user = this._getAdminAndUser(adminId, userId).user;
+        if (user instanceof User) {
+            user.setPassword(newPass);
+        }
+    };
+    //   ADMIN SET EMAIL
+    static setUserEmail = (adminId, userId, newEmail) => {
+        const user = this._getAdminAndUser(adminId, userId).user;
+        if (user instanceof User) {
+            user.setPassword(newEmail);
+        }
+    };
+    //   ADMIN SET ACCESS
+    static setUserAccess = (adminId, userId, newAccess) => {
+        const user = this._getAdminAndUser(adminId, userId).user;
+        if (user instanceof User) {
+            user.setPassword(newAccess);
+        }
+    };
 }
-_a = App;
-App._userList = [];
-App.addUser = (user) => {
-    if (_a._userList.find((el) => el.id === user.id))
-        throw new Error("User already in the list");
-    _a._userList.push(user);
-};
-App.createUser = (userObj, access) => {
-    const newUser = new User(userObj, access, idGenerator());
-    _a._userList.push(newUser);
-};
-App.createAdmin = (userObj) => {
-    _a.createUser(userObj, "admin");
-};
-//   ADMIN SET PASSWORD
-App.setUserPassword = (adminId, userId, newPass) => {
-    const user = _a._getAdminAndUser(adminId, userId).user;
-    if (user instanceof User) {
-        user.setPassword(newPass);
-    }
-};
-//   ADMIN SET EMAIL
-App.setUserEmail = (adminId, userId, newEmail) => {
-    const user = _a._getAdminAndUser(adminId, userId).user;
-    if (user instanceof User) {
-        user.setPassword(newEmail);
-    }
-};
-//   ADMIN SET ACCESS
-App.setUserAccess = (adminId, userId, newAccess) => {
-    const user = _a._getAdminAndUser(adminId, userId).user;
-    if (user instanceof User) {
-        user.setPassword(newAccess);
-    }
-};
 // Helper functions
 const idGenerator = () => {
     const numberId = Date.now().toString(36) +

@@ -7,20 +7,20 @@ const Operator_js_1 = __importDefault(require("./Operator.js"));
 class Overlord extends Operator_js_1.default {
     constructor(name, surname) {
         super(name, surname);
-        this.setIndividualSatellitePowerStatus = (satelliteId, newStatus) => {
-            // Property 'setOnOffStatus' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setOnOffStatus' instead?ts(2576)
-            this.satellitesManager.setOnOffStatus(satelliteId, newStatus);
-        };
-        this.groupShutDown = (groupId) => {
-            this.setGroupProperty("poweredStatus", groupId, "off");
-        };
-        this.systemShutDown = () => {
-            this.satellitesManager.turnOffAllSatellites();
-        };
-        this.systemPowerOn = () => {
-            this.satellitesManager.turnOnAllSatellites();
-        };
     }
+    setIndividualSatellitePowerStatus = (satelliteId, newStatus) => {
+        // Property 'setOnOffStatus' does not exist on type 'SatellitesManager'. Did you mean to access the static member 'SatellitesManager.setOnOffStatus' instead?ts(2576)
+        this.satellitesManager.setOnOffStatus(satelliteId, newStatus);
+    };
+    groupShutDown = (groupId) => {
+        this.setGroupProperty("poweredStatus", groupId, "off");
+    };
+    systemShutDown = () => {
+        this.satellitesManager.turnOffAllSatellites();
+    };
+    systemPowerOn = () => {
+        this.satellitesManager.turnOnAllSatellites();
+    };
 }
 exports.default = Overlord;
 // *************************************************
