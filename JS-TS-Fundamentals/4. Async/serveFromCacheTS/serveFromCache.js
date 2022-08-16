@@ -38,7 +38,7 @@ const query = "clarcson";
 const saveToJSON = async (data, location) => {
     fs.writeFileSync(location, JSON.stringify(data));
 };
-const functionWithFetch = async () => {
+const functionWithFetch = async (url, query) => {
     const URL = `${apiUrl}${query}`;
     const FILE = `./cache/${query}.json`;
     if (fs.existsSync(FILE)) {
@@ -50,12 +50,13 @@ const functionWithFetch = async () => {
         console.log("NOT FOUND");
         let data = await (0, node_fetch_1.default)(URL).then((res) => res.json());
         console.log(data);
+        // AS JSON, VS AXIOS NO AS JSON?
         await saveToJSON(data, FILE);
         return data;
     }
 };
 console.log(await functionWithFetch(apiUrl, query));
-const functionWithAxios = async () => {
+const functionWithAxios = async (url, query) => {
     const URL = `${apiUrl}${query}`;
     const FILE = `./cache/${query}.json`;
     if (fs.existsSync(FILE)) {
