@@ -8,55 +8,53 @@
 // ******************************************
 // ******************************************
 const pp1 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("foo1");
-    }, 100);
+  setTimeout(() => {
+    resolve("foo1");
+  }, 100);
 });
 const pp2 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("foo2");
-    }, 200);
+  setTimeout(() => {
+    resolve("foo2");
+  }, 200);
 });
 const pp3 = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        reject("foo3");
-    }, 300);
+  setTimeout(() => {
+    reject("foo3");
+  }, 300);
 });
 const array2 = [pp2, pp3, pp1];
 // ******************************************
 // ******************************************
 // ******************************************
 async function ArecursivePromise(arrayOfPromises) {
-    let index = 0;
-    let result = [];
-    try {
-        await asyncResolveAndAdd(index, array2, result);
-        return result;
-    }
-    catch (err) {
-        throw err;
-    }
+  let index = 0;
+  let result = [];
+  try {
+    await asyncResolveAndAdd(index, array2, result);
+    return result;
+  } catch (err) {
+    throw err;
+  }
 }
 async function asyncResolveAndAdd(index, arrayOfPromises, result) {
-    if (index + 1 === arrayOfPromises.length) {
-        return result;
-    }
-    try {
-        await arrayOfPromises[index].then((res) => {
-            result.push(res);
-            index++;
-            asyncResolveAndAdd(index, arrayOfPromises, result);
-        });
-    }
-    catch (err) {
-        result.push(err);
-        return;
-    }
+  if (index + 1 === arrayOfPromises.length) {
+    return result;
+  }
+  try {
+    await arrayOfPromises[index].then((res) => {
+      result.push(res);
+      index++;
+      asyncResolveAndAdd(index, arrayOfPromises, result);
+    });
+  } catch (err) {
+    result.push(err);
+    return;
+  }
 }
 async function testfunc() {
-    const test = await ArecursivePromise(array2);
-    console.log(test);
-    return test;
+  const test = await ArecursivePromise(array2);
+  console.log(test);
+  return test;
 }
 const test133 = testfunc();
 console.log(test133);

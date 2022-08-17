@@ -35,13 +35,17 @@ type TArrayOfPromises<T> = Array<Promise<T>>;
 // ******************************************
 // ******************************************
 
+
+// fn
+// if result array.length ==arrayOfPromises.lengh return
+// return fn()
+
 async function ArecursivePromise<T>(arrayOfPromises: TArrayOfPromises<T>) {
   let index = 0;
   let result: Array<T> = [];
 
   try {
-    await asyncResolveAndAdd(index, array2, result);
-    return result;
+    return await asyncResolveAndAdd(index, array2, result);
   } catch (err) {
     throw err;
   }
@@ -51,29 +55,30 @@ async function asyncResolveAndAdd<T>(
   index: number,
   arrayOfPromises: TArrayOfPromises<T>,
   result: Array<T>
-) {
-  if (index + 1 === arrayOfPromises.length) {
+): Promise<T[]> {
+  if (index === arrayOfPromises.length - 1) {
     return result;
   }
 
   try {
-    await arrayOfPromises[index].then((res) => {
-      result.push(res);
-      index++;
-      asyncResolveAndAdd(index, arrayOfPromises, result);
-    });
+    const res = await arrayOfPromises[index]
+    result.push(res);
+    index++;
+    return await asyncResolveAndAdd(index, arrayOfPromises, result);
   } catch (err) {
     result.push(err as T);
-    return;
+    return Promise.resolve(result)
   }
 }
 
-async function testfunc(): Promise<any> {
+// [() => fetch(), () => fetch()]
+
+async function testfunc2(): Promise<any> {
   const test = await ArecursivePromise(array2);
   console.log(test);
   return test;
 }
-const test133 = testfunc();
+const test133 = testfunc2();
 console.log(test133);
 
 // ssss

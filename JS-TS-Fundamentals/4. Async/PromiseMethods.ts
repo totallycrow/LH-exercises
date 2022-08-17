@@ -37,13 +37,13 @@ const promiseAll = <T>(arrayOfPromise: TArrayOfPromises<T>): Promise<T[]> => {
   });
 };
 
-async function testfunc(): Promise<any> {
-  const test = await promiseAll(array);
-  console.log(test);
-  return test;
-}
+// async function testfunc(): Promise<any> {
+//   const test = await promiseAll(array);
+//   console.log(test);
+//   return test;
+// }
 
-testfunc();
+// testfunc();
 
 // ****************************************
 // ASYNC/AWAIT
