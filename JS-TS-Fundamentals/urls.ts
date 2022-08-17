@@ -1,49 +1,46 @@
+
+const arrayRegexp = /^.*[[.\d]]$/;\
+
+
+// const isNumber = (variableToCheck: any): variableToCheck is Array =>
+//   typeof (variableToCheck as Array)[0] !== "string" ;
+
+
 function getUrlParameters(url: string) {
   const query = "?" + url.split("?")[1];
   const params = new URLSearchParams(query);
 
-  let arrayRegexp = /^.*[[.\d]]$/;
+  // const result: { 
+  //   [x: string]: Array<string | number> | string | number;
+  // } = {};
 
-  let result = {};
+  const result = new Map()
 
-  // Display the key/value pairs
   for (let [key, value] of params.entries()) {
-    // Check if key is a part of an array
     if (key.match(arrayRegexp)) {
-      console.log(key);
       const validKey = key.split("[")[0];
       const validIndex = parseInt(key.split("[")[1].slice(0, -1));
-      console.log(validKey);
-      console.log(validIndex);
-
-      //   check if correct key has already been created
       const hasKey = Object.hasOwn(result, validKey);
 
-      if (hasKey) {
-        console.log("VALID KEY FOUND");
+      result.has(validKey)
 
-        console.log("HAS KEY: VALUE");
-        console.log(value);
-        console.log(validKey);
+      // TypeGuard na Array<string | number>
+      if (hasKey && isArray) {
+        const abc = result[validKey]
+        result[validKey][validIndex] = value;
 
-        let newObj = { ...result };
-
-        //       Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
-        // No index signature with a parameter of type 'string' was found on type '{}'.ts(7053)
-
-        let newArray = newObj[validKey];
-
-        newArray[validIndex] = value;
-      } else {
-        let newArray = [];
-        newArray[validIndex] = value;
-        result = { ...result, [validKey]: newArray };
-      }
-
+        const current = result.get(validKey)
+        current[validKey] = value
+        result.set(validKey, current)
+        continue
+      } 
+      const newArray = [];
+      newArray[validIndex] = value;
+      result = { ...result, [validKey]: newArray };
       // ELSE ITEM IS NOT A PART OF AN ARRAY
-    } else {
-      result = { ...result, [key]: value };
-    }
+      continue
+    } 
+    result = { ...result, [key]: value };
   }
   return result;
 }

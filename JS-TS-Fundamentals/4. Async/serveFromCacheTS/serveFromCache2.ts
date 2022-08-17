@@ -9,10 +9,11 @@ import fetch from "node-fetch";
 import axios from "axios";
 import { resolve } from "path";
 
+const pathToCache = "./cache/"
 const apiUrl = "https://www.googleapis.com/books/v1/volumes?q=";
 const query = "clarcson";
 
-const saveToJSON = async (data: JSON, location: string) => {
+const saveToJSON = async (data: object, location: string) => {
   fs.writeFileSync(location, JSON.stringify(data));
 };
 
@@ -20,52 +21,101 @@ const saveToJSON = async (data: JSON, location: string) => {
 
 // How to debug promises? -> pending
 
+// 1. jesteś w stanie opcjonalnie dodać cacher
+// 2. możesz dać prawo komuś skipnąć cache - przypadki testowe, dziwne edge casey
+
+// na fontendzie -> do localstorage
+// na backendzie -> lokalnego cacha gdy apka jest wystarczająco mała + server udostępnia Ci fs
+
 class Fetcher {
-  constructor() {}
+  cacher = null;
 
-  runPromise = async (url: string) => {
-    let response;
+  private runAxiosPromise = async <T>(url: string) => {
     try {
-      response = await axios.get(url);
+      return { data: await axios.get<T>(url), isError: false, message: "OK"  } ;
     } catch (err) {
-      return err;
+      return { data: null, isError: true, message: err as string};
     }
-
-    // const data = await promise.then(res => res.data.js)
-    return response.data;
   };
 
-  static getFromCache = async (FILE: string) => {
+  runQuery (URL, skipCache) {
+    const URL = `${apiUrl}${query}`;
+    const FILE = `./cache/${query}.json`;
+
+    if(!this.cacher) {
+      // const res = runAxiosPromise
+      // return
+    }
+
+    if (skipCache) {
+      // const res = runAxiosPromise
+      // return
+    }
+
+    if (this.cacher.isInCache(query)) {
+      return this.cacher.getCache(query)
+    }
+    const res = runAxiosPromise
+    this.cacher.save(res)
+    return res
+  }
+
+  setCacher(cacher) {
+    this.cacher = cacher
+  }
+}
+
+class Cacher {
+  checkCache = async (FILE: string) => {
+    return fs.existsSync(FILE);
+  };
+  setCache = async (data: object, FILE: string) => {
+    await saveToJSON(data, FILE);
+  };
+
+  getFromCache = async (FILE: string) => {
     let obj = await JSON.parse(fs.readFileSync(FILE, "utf8"));
     return obj;
   };
 }
 
-class Cacher {
-  static checkCache = async (FILE: string) => {
-    return fs.existsSync(FILE);
-  };
-  static setCache = async (data: JSON, FILE: string) => {
-    await saveToJSON(data, FILE);
-  };
+interface AnyObject {
+  [x:string]:any
 }
 
 const main = async (url: string, query: string) => {
-  const URL = `${apiUrl}${query}`;
-  const FILE = `./cache/${query}.json`;
 
-  const isCached = await Cacher.checkCache(FILE);
 
-  if (isCached) {
-    const dataFromCache = await Fetcher.getFromCache(FILE);
+  const myFetcher = new Fetcher()
 
-    return dataFromCache;
-  }
+  // czy udało się dobrze pobrać
+  const response = myFetcher.runQuery("url")
 
-  const fetcher = new Fetcher();
-  const data = await fetcher.runPromise(URL);
+  // czy złapał error
+  myFetcher.runQuery("url")
+  myFetcher.runQuery("url")
+  myFetcher.runQuery("url")
 
-  await Cacher.setCache(data, FILE);
+  const myCacher = new Cacher()
+
+  
+  myFetcher.setCacher(myCacher)
+
+  myFetcher.runQuery("123", true)
+  myFetcher.runQuery("123")
+
+  myFetcher.runQuery()
+  myFetcher.runQuery()
+  myFetcher.runQuery()
+  myFetcher.runQuery()
+
+
+  // GET -> /api/users/
+
+  // getUsers
+    // return Fetcher.runQuery("adawdad")
+// res.json(users)
+
   return data;
 };
 
@@ -74,12 +124,12 @@ const main = async (url: string, query: string) => {
 // @ts-ignore
 async function testing() {
   const test = await main(apiUrl, query);
-  return test;
+  console.log(test)
 }
 
 // Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', or 'nodenext', and the 'target' option is set to 'es2017' or higher.ts(1378)
 
-const testval = await testing();
+testing();
 console.log(testval);
 
 // Cacher
