@@ -21,6 +21,8 @@ function getUrlParameters(url) {
                 console.log(value);
                 console.log(validKey);
                 let newObj = { ...result };
+                //       Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+                // No index signature with a parameter of type 'string' was found on type '{}'.ts(7053)
                 let newArray = newObj[validKey];
                 newArray[validIndex] = value;
             }

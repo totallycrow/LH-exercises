@@ -16,7 +16,6 @@
     "url": "https://github.com/totallycrow/LH-exercises/issues"
   },
   "homepage": "https://github.com/totallycrow/LH-exercises#readme",
-  "type": "module",
   "devDependencies": {
     "@babel/preset-env": "^7.18.9",
     "@types/node": "^18.7.1",

@@ -22,12 +22,12 @@ const promiseAll = (arrayOfPromise) => {
         });
     });
 };
-async function testfunc() {
-    const test = await promiseAll(array);
-    console.log(test);
-    return test;
-}
-testfunc();
+// async function testfunc(): Promise<any> {
+//   const test = await promiseAll(array);
+//   console.log(test);
+//   return test;
+// }
+// testfunc();
 // ****************************************
 // ASYNC/AWAIT
 async function asyncPromiseAll(arrayOfPromise) {

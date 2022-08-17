@@ -7,6 +7,7 @@ import * as fs from "fs";
 import * as path from "path";
 import fetch from "node-fetch";
 import axios from "axios";
+import { resolve } from "path";
 
 const apiUrl = "https://www.googleapis.com/books/v1/volumes?q=";
 const query = "clarcson";
@@ -17,17 +18,26 @@ const saveToJSON = async (data: JSON, location: string) => {
 
 // Fetcher
 
+// How to debug promises? -> pending
+
 class Fetcher {
   constructor() {}
 
-  query = async (url: string) => {
-    return await fetch(url);
-  };
-  runPromise = async (url:string) => {
-    const response = await this.query(url)
-    // const data = await promise.then(res => res.data.js)
-    return response.json()
+  runPromise = async (url: string) => {
+    let response;
+    try {
+      response = await axios.get(url);
+    } catch (err) {
+      return err;
+    }
 
+    // const data = await promise.then(res => res.data.js)
+    return response.data;
+  };
+
+  static getFromCache = async (FILE: string) => {
+    let obj = await JSON.parse(fs.readFileSync(FILE, "utf8"));
+    return obj;
   };
 }
 
@@ -38,28 +48,39 @@ class Cacher {
   static setCache = async (data: JSON, FILE: string) => {
     await saveToJSON(data, FILE);
   };
-
-  static serveFromCache = async (FILE: string) => {
-    let obj = await JSON.parse(fs.readFileSync(FILE, "utf8"));
-    return obj;
-  };
 }
 
 const main = async (url: string, query: string) => {
   const URL = `${apiUrl}${query}`;
   const FILE = `./cache/${query}.json`;
 
-  const isCached = await Cacher.checkCache(FILE)
+  const isCached = await Cacher.checkCache(FILE);
 
-  if(isCached) return Cacher.serveFromCache(FILE)
-  
+  if (isCached) {
+    const dataFromCache = await Fetcher.getFromCache(FILE);
+
+    return dataFromCache;
+  }
+
   const fetcher = new Fetcher();
-  const data = await fetcher.runPromise(URL)
+  const data = await fetcher.runPromise(URL);
 
-  Cacher.setCache(data, FILE)
-  return data
-
+  await Cacher.setCache(data, FILE);
+  return data;
 };
+
+// how to test/debug promises? // pending? / can't await at top level
+
+// @ts-ignore
+async function testing() {
+  const test = await main(apiUrl, query);
+  return test;
+}
+
+// Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', or 'nodenext', and the 'target' option is set to 'es2017' or higher.ts(1378)
+
+const testval = await testing();
+console.log(testval);
 
 // Cacher
 
