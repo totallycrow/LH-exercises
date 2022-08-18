@@ -198,3 +198,7 @@ testing();
 //   ],
 //   isError: false
 // }
+
+function testfunction<T, D>(param1: T, param2: D) {}
+
+testfunction<number, number>("test", 9);

@@ -171,3 +171,5 @@ testing();
 //   ],
 //   isError: false
 // }
+function testfunction(param1, param2) { }
+testfunction("test", 9);
