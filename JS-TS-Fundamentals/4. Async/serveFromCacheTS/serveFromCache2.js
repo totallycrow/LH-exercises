@@ -32,61 +32,93 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
 const axios_1 = __importDefault(require("axios"));
+const pathToCache = "./cache/";
 const apiUrl = "https://www.googleapis.com/books/v1/volumes?q=";
 const query = "clarcson";
 const saveToJSON = async (data, location) => {
     fs.writeFileSync(location, JSON.stringify(data));
 };
 // Fetcher
-// How to debug promises? -> pending
+// 1. jesteś w stanie opcjonalnie dodać cacher
+// 2. możesz dać prawo komuś skipnąć cache - przypadki testowe, dziwne edge casey
+// na fontendzie -> do localstorage
+// na backendzie -> lokalnego cacha gdy apka jest wystarczająco mała + server udostępnia Ci fs
 class Fetcher {
-    constructor() { }
-    runPromise = async (url) => {
-        let response;
+    cacher = null;
+    runAxiosPromise = async (url) => {
         try {
-            response = await axios_1.default.get(url);
+            return { data: await axios_1.default.get(url), isError: false, message: "OK" };
         }
         catch (err) {
-            return err;
+            return { data: null, isError: true, message: err };
         }
-        // const data = await promise.then(res => res.data.js)
-        return response.data;
     };
-    static getFromCache = async (FILE) => {
+    async runQuery(givenUrl, query, skipCache = false) {
+        const URL = `${givenUrl}${query}`;
+        const FILE = `${pathToCache}${query}.json`;
+        if (skipCache) {
+            // const res = runAxiosPromise
+            // return
+            const res = await this.runAxiosPromise(URL);
+            return res;
+        }
+        // ^^ combine vv ?
+        if (!this.cacher) {
+            // const res = runAxiosPromise
+            // return
+            const res = await this.runAxiosPromise(URL);
+            return res;
+        }
+        if (this.cacher.checkCache(query)) {
+            return this.cacher.getFromCache(query);
+        }
+    }
+    setCacher(cacher) {
+        this.cacher = cacher;
+    }
+}
+class Cacher {
+    checkCache = (FILE) => {
+        return fs.existsSync(FILE);
+    };
+    setCache = async (data, FILE) => {
+        await saveToJSON(data, FILE);
+    };
+    getFromCache = async (FILE) => {
         let obj = await JSON.parse(fs.readFileSync(FILE, "utf8"));
         return obj;
     };
 }
-class Cacher {
-    static checkCache = async (FILE) => {
-        return fs.existsSync(FILE);
-    };
-    static setCache = async (data, FILE) => {
-        await saveToJSON(data, FILE);
-    };
-}
 const main = async (url, query) => {
-    const URL = `${apiUrl}${query}`;
-    const FILE = `./cache/${query}.json`;
-    const isCached = await Cacher.checkCache(FILE);
-    if (isCached) {
-        const dataFromCache = await Fetcher.getFromCache(FILE);
-        return dataFromCache;
-    }
-    const fetcher = new Fetcher();
-    const data = await fetcher.runPromise(URL);
-    await Cacher.setCache(data, FILE);
-    return data;
+    const myFetcher = new Fetcher();
+    // czy udało się dobrze pobrać
+    const response = await myFetcher.runQuery(apiUrl, query);
+    console.log(typeof response);
+    if (response)
+        return response.data.data;
+    // // czy złapał error
+    // myFetcher.runQuery("url");
+    // myFetcher.runQuery("url");
+    // myFetcher.runQuery("url");
+    // const myCacher = new Cacher();
+    // myFetcher.setCacher(myCacher);
+    // myFetcher.runQuery("123", true);
+    // myFetcher.runQuery("123");
+    // myFetcher.runQuery();
+    // myFetcher.runQuery();
+    // myFetcher.runQuery();
+    // myFetcher.runQuery();
+    // // GET -> /api/users/
+    // // getUsers
+    // // return Fetcher.runQuery("adawdad")
+    // // res.json(users)
 };
-// how to test/debug promises? // pending? / can't await at top level
 // @ts-ignore
 async function testing() {
     const test = await main(apiUrl, query);
-    return test;
+    console.log(test);
 }
-// Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022', 'esnext', 'system', 'node16', or 'nodenext', and the 'target' option is set to 'es2017' or higher.ts(1378)
-const testval = await testing();
-console.log(testval);
+testing();
 // Cacher
 // const fetcher = new Fetcher()
 // .runPromise()
