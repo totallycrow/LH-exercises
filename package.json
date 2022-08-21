@@ -1,7 +1,6 @@
 {
-  "name": "lh-exercises",
+  "name": "ls",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -40,5 +39,6 @@
   "dependencies": {
     "axios": "^0.27.2",
     "node-fetch": "^3.2.10"
-  }
+  },
+  "description": ""
 }
