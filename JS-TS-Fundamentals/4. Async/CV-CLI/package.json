@@ -2,13 +2,16 @@
   "name": "cv-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "./bin/index.js",
+  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
+    "commander": "^9.4.0",
+    "conf": "^10.2.0",
     "yargs": "13.2"
   }
 }
