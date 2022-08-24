@@ -11,6 +11,11 @@
   </body>
   <script src="./index.js"></script>
   <script>
-    let typed = new Typed(".main-div");
+    let typed = new TypingController(".main-div", {
+      typeStyle: "letters",
+      strings: ["Lorem", "Ipsum"],
+      typeSpeed: 100,
+      removeAfter: false,
+    });
   </script>
 </html>

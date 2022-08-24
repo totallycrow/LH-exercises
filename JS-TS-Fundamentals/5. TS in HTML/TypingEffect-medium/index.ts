@@ -6,18 +6,29 @@
 // ma pozwalać na wsazanie czy pisane mają być wyrazy czy litery,
 // ma pozwalać na wskazanie tempa pisania w ilościach liter na minutę (defaultowo 120/min)
 
+// *************************************
+// ************* UTILITIES *************
+// *************************************
+
 interface IOptions {
   typeStyle: "words" | "letters";
   strings: Array<string>;
   typeSpeed: number;
+  removeAfter: boolean;
 }
+
+const mockOptions = {
+  typeStyle: "letters",
+  strings: ["Lorem", "Ipsum"],
+  typeSpeed: 100,
+  removeAfter: false,
+};
 
 class Cursor {
   setCursor = (element: HTMLElement, typeSpeed: number) => {
     let visible = true;
     const cursor = document.createElement("span");
     cursor.innerText = "|";
-    // cursor.style.cssText = "display: inline-block; margin-left: 2px;";
     cursor.style.cssText = "display: inline-block;";
 
     setInterval(() => {
@@ -35,85 +46,105 @@ class Cursor {
   };
 }
 
-class Typed {
+// *************************************
+// ************* CONTROLLER ************
+// *************************************
+
+class TypingController {
   constructor(elem: string, options: IOptions) {
-    const test = document.querySelector(elem) as HTMLElement;
-    console.log(test);
+    const targetHtmlElement = document.querySelector(elem) as HTMLElement;
+    const typeWriter = new TypeWriter(targetHtmlElement);
+    const typeSpeed = options.typeSpeed;
+    const removeAfter = options.removeAfter;
 
-    // const cursor = new Cursor();
-    // cursor.setCursor(test);
+    let itemsToType = [];
 
-    this.setTyping(test);
+    if (options.typeStyle === "letters") {
+      itemsToType = options.strings.join(" ").split("");
+    } else {
+      itemsToType = options.strings.map((el) => el + " ");
+    }
+    console.log(itemsToType);
+    typeWriter.typeElements(itemsToType, typeSpeed, removeAfter);
   }
-
-  // setCursor = (element: HTMLElement) => {
-  //   let visible = true;
-  //   const cursor = document.createElement("span");
-  //   cursor.innerText = "|";
-  //   cursor.style.cssText = "display: inline-block; margin-left: 8px;";
-
-  //   setInterval(() => {
-  //     if (visible) {
-  //       cursor.style.cssText = "display: none";
-  //       visible = !visible;
-  //       return cursor;
-  //     } else {
-  //       cursor.style.cssText = "display: inline-block; margin-left: 8px;";
-  //       visible = !visible;
-  //       return cursor;
-  //     }
-  //   }, 500);
-  //   element.appendChild(cursor);
-  // };
-
-  setTyping = (element: HTMLElement, array: Array<string>) => {
-    let a = ["Lorem"];
-
-    const cursor = new Cursor();
-
-    const staticCursor = document.createElement("span");
-    // staticCursor.style.cssText =
-    //   "display: inline-block; margin-left: 8px; width: 2px; height: 42px; background-color: red;";
-
-    const typeElement = document.createElement("span");
-
-    cursor.setCursor(staticCursor, 500);
-    element.appendChild(typeElement);
-    element.appendChild(staticCursor);
-
-    // staticCursor.innerHTML = "|";
-
-    // element.insertAdjacentElement("afterend", staticCursor);
-
-    // INF SINGLE WORDS
-    let arr = a.join(" ");
-
-    let time = 500;
-    let i = 0;
-
-    const writer = () => {
-      if (i == arr.length) {
-        return;
-      }
-      if (i < arr.length) {
-        typeElement.innerHTML = typeElement.innerHTML + arr[i];
-        i++;
-
-        setTimeout(writer, time);
-      }
-    };
-    writer();
-  };
 }
 
-// class TypingCursor {}
+// *************************************
+// ************* TYPE EFFECT ***********
+// *************************************
 
-// const test = document.querySelector(".main-div") as HTMLElement;
-// console.log(test);
-// test.style.height = "200px";
-// test.style.backgroundColor = "#f2f2f2";
+class TypeWriter {
+  cursor: Cursor;
+  cursorArea: HTMLElement;
+  elementToTypeTo: HTMLElement;
+  givenElement: HTMLElement;
+  constructor(elem: HTMLElement) {
+    this.cursor = new Cursor();
+    this.cursorArea = document.createElement("span");
+    this.elementToTypeTo = document.createElement("span");
+    this.givenElement = elem;
+  }
 
-// const li = document.createElement("p");
-// li.textContent = "test2";
+  setTypeContainer = () => {
+    this.cursor.setCursor(this.cursorArea, 200);
+    this.givenElement.appendChild(this.elementToTypeTo);
+    this.givenElement.appendChild(this.cursorArea);
+  };
 
-// test.appendChild(li);
+  typeElements = (array: Array<string>, typeSpeed: number, remove: boolean) => {
+    this.setTypeContainer();
+    this.typer(array, this.elementToTypeTo, typeSpeed, remove);
+  };
+
+  typer = (
+    elementToTypeOut: Array<string>,
+    elementToWriteTo: HTMLElement,
+    typeSpeed: number,
+    remove: boolean
+  ) => {
+    let i = 0;
+
+    const type = () => {
+      setTimeout(() => {
+        if (i == elementToTypeOut.length && remove) {
+          this.remover(elementToTypeOut, elementToWriteTo, typeSpeed);
+        }
+        if (i == elementToTypeOut.length) {
+          return;
+        }
+        if (i < elementToTypeOut.length) {
+          elementToWriteTo.innerHTML =
+            elementToWriteTo.innerHTML + elementToTypeOut[i];
+          console.log(elementToTypeOut[i]);
+          i++;
+          setTimeout(type, typeSpeed);
+        }
+      }, typeSpeed);
+    };
+    type();
+  };
+  remover = (
+    elementToTypeOut: Array<string>,
+    elementToWriteTo: HTMLElement,
+    typeSpeed: number
+  ) => {
+    let i = 0;
+    console.log(elementToTypeOut);
+    let toType = elementToTypeOut as Array<string>;
+    setTimeout(() => {
+      const type = () => {
+        if (i == elementToTypeOut.length) {
+          return;
+        }
+        if (i < elementToTypeOut.length) {
+          toType = toType.slice(0, -1);
+          console.log(toType);
+          elementToWriteTo.innerHTML = toType.join("");
+          i++;
+          setTimeout(type, typeSpeed);
+        }
+      };
+      type();
+    }, 1000);
+  };
+}
