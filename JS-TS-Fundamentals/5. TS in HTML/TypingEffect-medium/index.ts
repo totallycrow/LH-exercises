@@ -10,19 +10,19 @@
 // ************* UTILITIES *************
 // *************************************
 
-interface IOptions {
-  typeStyle: "words" | "letters";
-  strings: Array<string>;
-  typeSpeed: number;
-  removeAfter: boolean;
-}
-
 const mockOptions = {
   typeStyle: "letters",
   strings: ["Lorem", "Ipsum"],
   typeSpeed: 100,
   removeAfter: false,
 };
+
+interface IOptions {
+  typeStyle: "words" | "letters";
+  strings: Array<string>;
+  typeSpeed: number;
+  removeAfter: boolean;
+}
 
 class Cursor {
   setCursor = (element: HTMLElement, typeSpeed: number) => {

@@ -1,6 +1,13 @@
 "use strict";
 // Twoim zadaniem jest odtworzyć efekt wizualny pisania, na podstawie biblioteki: https://mattboldt.com/demos/typed-js/
 // Instancja klasy Typed:
+// ma pozwalać na wskazanie elementu html, w którym aktualny tekst zawarty w elemencie zostanie zdobiony tym elementem.
+// ma tworzyć za wskazanym elementem, mrugająca, pionową linię symulującą kursor,
+// ma pozwalać na wsazanie czy pisane mają być wyrazy czy litery,
+// ma pozwalać na wskazanie tempa pisania w ilościach liter na minutę (defaultowo 120/min)
+// *************************************
+// ************* UTILITIES *************
+// *************************************
 const mockOptions = {
     typeStyle: "letters",
     strings: ["Lorem", "Ipsum"],

@@ -35,14 +35,15 @@ const axios_1 = __importDefault(require("axios"));
 const pathToCache = "./cache/";
 const apiUrl = "https://www.googleapis.com/books/v1/volumes?q=";
 const query = "clarcson";
+// ********************
+// ********************
+// ********************
 const saveToJSON = async (data, location) => {
     fs.writeFileSync(location, JSON.stringify(data));
 };
-// Fetcher
-// 1. jesteś w stanie opcjonalnie dodać cacher
-// 2. możesz dać prawo komuś skipnąć cache - przypadki testowe, dziwne edge casey
-// na fontendzie -> do localstorage
-// na backendzie -> lokalnego cacha gdy apka jest wystarczająco mała + server udostępnia Ci fs
+// ********************
+// ********* FETCHER ***********
+// ********************
 class Fetcher {
     cacher = null;
     runAxiosPromise = async (url) => {
@@ -54,18 +55,12 @@ class Fetcher {
         }
     };
     async runQuery(givenUrl, query, skipCache = false) {
-        // const URL = `${givenUrl}${query}`;
-        // const FILE = `${pathToCache}${query}.json`;
         if (skipCache) {
-            // const res = runAxiosPromise
-            // return
             const res = await this.runAxiosPromise(givenUrl);
             return res;
         }
         // ^^ combine vv ?
         if (!this.cacher) {
-            // const res = runAxiosPromise
-            // return
             console.log("cache not found");
             const res = await this.runAxiosPromise(givenUrl);
             return res;
@@ -78,6 +73,9 @@ class Fetcher {
         this.cacher = cacher;
     }
 }
+// ********************
+// ****** CACHER ******
+// ********************
 class Cacher {
     checkCache = (FILE) => {
         return fs.existsSync(FILE);
@@ -92,7 +90,7 @@ class Cacher {
     };
 }
 const main = async (url, query) => {
-    const URL = `${apiUrl}${query}`;
+    const URL = `${url}${query}`;
     const FILE = `${pathToCache}${query}.json`;
     const myFetcher = new Fetcher();
     const response = await myFetcher.runQuery(URL, query);
@@ -103,9 +101,20 @@ const main = async (url, query) => {
     console.log(myFetcher.cacher?.getFromCache(FILE));
     return myFetcher.cacher?.getFromCache(FILE);
 };
+// ********************
+// ********************
+// ********************
 // @ts-ignore
 async function testing() {
     const test = await main(apiUrl, query);
     console.log(test);
 }
 testing();
+// ********************
+// ********************
+// ********************
+// Fetcher
+// 1. jesteś w stanie opcjonalnie dodać cacher
+// 2. możesz dać prawo komuś skipnąć cache - przypadki testowe, dziwne edge casey
+// na fontendzie -> do localstorage
+// na backendzie -> lokalnego cacha gdy apka jest wystarczająco mała + server udostępnia Ci fs
