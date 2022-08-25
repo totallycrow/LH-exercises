@@ -41,7 +41,7 @@ class Cursor {
         visible = !visible;
         // return cursor;
       }
-    }, typeSpeed);
+    }, typeSpeed / 2);
     element.appendChild(cursor);
   };
 }
@@ -73,16 +73,34 @@ class TypingController {
 // ************* TYPE EFFECT ***********
 // *************************************
 
+
+// Intersection observer // w js
+
+// Observer Pattern / pub sub /// RX
+// .subscribe(callback) <-- to dostaje ui
+    // this.subcribers.push(subscriber)
+
+// .emmit() na scroll + poczytaj jak zrobić scrolla z performance, eventlistener passive: true
+    // this.subcribers.foreach(subscriber => {
+    //   subscriber.callback(this.data)
+    // })
+
+
 class TypeWriter {
   cursor: Cursor;
   cursorArea: HTMLElement;
   elementToTypeTo: HTMLElement;
   givenElement: HTMLElement;
-  constructor(elem: HTMLElement) {
+  constructor(root: HTMLElement) {
     this.cursor = new Cursor();
     this.cursorArea = document.createElement("span");
     this.elementToTypeTo = document.createElement("span");
-    this.givenElement = elem;
+    this.givenElement = root;
+  }
+
+  init() {
+    this.ui.prepare() 
+    this.clock.start()
   }
 
   setTypeContainer = () => {
@@ -105,6 +123,7 @@ class TypeWriter {
     let i = 0;
 
     const type = () => {
+      // setInvertal
       setTimeout(() => {
         if (i == elementToTypeOut.length && remove) {
           this.remover(elementToTypeOut, elementToWriteTo, typeSpeed);
@@ -148,3 +167,31 @@ class TypeWriter {
     }, 1000);
   };
 }
+
+// const typer = new Typer(".element")
+// typer.buildUI()
+// typer.start()
+// typer.stop()
+
+// Logic
+// UI <-- Clock
+// UI <-- TypeWritter
+
+
+// genrateCurrentString
+// this.currentString = this.givenString.slice(0, this.currentIndex)
+
+// setInvertal(cb, 1000) 
+// cb ->
+// this.direction = boolean
+// if (this.index === length && this.direction) {
+//   this.direction = !this.direction
+// }
+
+// if (this.direction) {
+//   type()
+      // this.currentIndex++
+// } else {
+//   remove()
+      // this.currentIndex--
+// }
