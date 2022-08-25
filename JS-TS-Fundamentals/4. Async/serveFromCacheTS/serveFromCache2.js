@@ -54,19 +54,20 @@ class Fetcher {
         }
     };
     async runQuery(givenUrl, query, skipCache = false) {
-        const URL = `${givenUrl}${query}`;
-        const FILE = `${pathToCache}${query}.json`;
+        // const URL = `${givenUrl}${query}`;
+        // const FILE = `${pathToCache}${query}.json`;
         if (skipCache) {
             // const res = runAxiosPromise
             // return
-            const res = await this.runAxiosPromise(URL);
+            const res = await this.runAxiosPromise(givenUrl);
             return res;
         }
         // ^^ combine vv ?
         if (!this.cacher) {
             // const res = runAxiosPromise
             // return
-            const res = await this.runAxiosPromise(URL);
+            console.log("cache not found");
+            const res = await this.runAxiosPromise(givenUrl);
             return res;
         }
         if (this.cacher.checkCache(query)) {
@@ -85,33 +86,22 @@ class Cacher {
         await saveToJSON(data, FILE);
     };
     getFromCache = async (FILE) => {
+        console.log("CACHED FILE:");
         let obj = await JSON.parse(fs.readFileSync(FILE, "utf8"));
         return obj;
     };
 }
 const main = async (url, query) => {
+    const URL = `${apiUrl}${query}`;
+    const FILE = `${pathToCache}${query}.json`;
     const myFetcher = new Fetcher();
-    // czy udało się dobrze pobrać
-    const response = await myFetcher.runQuery(apiUrl, query);
-    console.log(typeof response);
-    if (response)
-        return response.data.data;
-    // // czy złapał error
-    // myFetcher.runQuery("url");
-    // myFetcher.runQuery("url");
-    // myFetcher.runQuery("url");
-    // const myCacher = new Cacher();
-    // myFetcher.setCacher(myCacher);
-    // myFetcher.runQuery("123", true);
-    // myFetcher.runQuery("123");
-    // myFetcher.runQuery();
-    // myFetcher.runQuery();
-    // myFetcher.runQuery();
-    // myFetcher.runQuery();
-    // // GET -> /api/users/
-    // // getUsers
-    // // return Fetcher.runQuery("adawdad")
-    // // res.json(users)
+    const response = await myFetcher.runQuery(URL, query);
+    myFetcher.setCacher(new Cacher());
+    if (!response)
+        throw new Error("Error fetching data");
+    myFetcher.cacher?.setCache(response.data.data, FILE);
+    console.log(myFetcher.cacher?.getFromCache(FILE));
+    return myFetcher.cacher?.getFromCache(FILE);
 };
 // @ts-ignore
 async function testing() {
@@ -119,57 +109,3 @@ async function testing() {
     console.log(test);
 }
 testing();
-// Cacher
-// const fetcher = new Fetcher()
-// .runPromise()
-// .query()
-// nie zapisane
-// const { res, err, message } = fetcher.query("api");
-// fetcher.setCache();
-// const res2 = fetcher.query("api");
-// const fromCache = fetcher.query("api");
-// // Can/Should you instantiate classess inside functions?
-// const functionWithAxios = async (url: string, query: string) => {
-//   const URL = `${apiUrl}${query}`;
-//   const FILE = `./cache/${query}.json`;
-//   if (fs.existsSync(FILE)) {
-//     console.log("FOUND FILE");
-//     let obj = JSON.parse(fs.readFileSync(FILE, "utf8"));
-//     return obj;
-//   } else {
-//     console.log("NOT FOUND");
-//     let data = await axios.get(URL).then((res) => res.data);
-//     console.log(data);
-//     await saveToJSON(data, FILE);
-//     return data;
-//   }
-// };
-// const tester = async () => {
-//   await functionWithAxios(apiUrl, query);
-// };
-// console.log(tester);
-// await functionWithFetch();
-// chain of responsibility
-// a -> b
-// const getButn = () => query => { next:true }
-// pipe <--- ramda.js
-//      10       10       45
-// COR.run([getButn, getInput, asvasd], options)
-// runNext(getInput)
-// try
-// await getInput()
-// catch (err)
-//   options.handleError(err)
-// return
-// fetcher.errorHandler({
-//   errorCode: 'input::adress::street',
-//   message: "asdasdasd"
-// })
-// const res = {
-//   errorInputs: [
-//     { adress_street: { isError: true, message: "asdasdasd", response:null }}
-//   ],
-//   isError: false
-// }
-function testfunction(param1, param2) { }
-testfunction("test", 9);
