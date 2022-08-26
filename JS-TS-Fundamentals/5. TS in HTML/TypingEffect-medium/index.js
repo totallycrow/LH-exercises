@@ -1,10 +1,4 @@
 "use strict";
-// Twoim zadaniem jest odtworzyć efekt wizualny pisania, na podstawie biblioteki: https://mattboldt.com/demos/typed-js/
-// Instancja klasy Typed:
-// ma pozwalać na wskazanie elementu html, w którym aktualny tekst zawarty w elemencie zostanie zdobiony tym elementem.
-// ma tworzyć za wskazanym elementem, mrugająca, pionową linię symulującą kursor,
-// ma pozwalać na wsazanie czy pisane mają być wyrazy czy litery,
-// ma pozwalać na wskazanie tempa pisania w ilościach liter na minutę (defaultowo 120/min)
 // *************************************
 // ************* UTILITIES *************
 // *************************************
@@ -14,6 +8,28 @@ const mockOptions = {
     typeSpeed: 100,
     removeAfter: false,
 };
+class UIController {
+    cursor;
+    givenElement;
+    constructor(root) {
+        this.cursor = new Cursor();
+        this.givenElement = root;
+    }
+    setTypeContainer = () => {
+        console.log(this.givenElement);
+        const elementToTypeTo = document.createElement("span");
+        const cursorArea = document.createElement("span");
+        this.cursor.setCursor(cursorArea, 200);
+        this.givenElement.appendChild(elementToTypeTo);
+        this.givenElement.appendChild(cursorArea);
+        return this;
+    };
+    getElementToTypeTo = () => {
+        const elementToTypeTo = this.givenElement.firstChild;
+        console.log(elementToTypeTo);
+        return elementToTypeTo;
+    };
+}
 class Cursor {
     setCursor = (element, typeSpeed) => {
         let visible = true;
@@ -35,15 +51,28 @@ class Cursor {
         element.appendChild(cursor);
     };
 }
+class Clock {
+    callback;
+    interval;
+    constructor(callback, interval) {
+        this.callback = callback;
+        this.interval = interval;
+    }
+    run = () => setInterval(this.callback, this.interval);
+}
 // *************************************
 // ************* CONTROLLER ************
 // *************************************
 class TypingController {
     constructor(elem, options) {
         const targetHtmlElement = document.querySelector(elem);
-        const typeWriter = new TypeWriter(targetHtmlElement);
+        const ui = new UIController(targetHtmlElement);
         const typeSpeed = options.typeSpeed;
-        const removeAfter = options.removeAfter;
+        ui.setTypeContainer();
+        const root = ui.getElementToTypeTo();
+        if (!root)
+            throw new Error("Invalid element");
+        console.log("TYPINGCONTROLLER START");
         let itemsToType = [];
         if (options.typeStyle === "letters") {
             itemsToType = options.strings.join(" ").split("");
@@ -52,71 +81,83 @@ class TypingController {
             itemsToType = options.strings.map((el) => el + " ");
         }
         console.log(itemsToType);
-        typeWriter.typeElements(itemsToType, typeSpeed, removeAfter);
+        console.log(root);
+        const typer = new TypeWriter(itemsToType, root, typeSpeed);
+        // typeWriter.typeElements(itemsToType, typeSpeed, removeAfter);
+        typer.start();
     }
 }
 // *************************************
 // ************* TYPE EFFECT ***********
 // *************************************
 class TypeWriter {
-    cursor;
-    cursorArea;
-    elementToTypeTo;
-    givenElement;
-    constructor(elem) {
-        this.cursor = new Cursor();
-        this.cursorArea = document.createElement("span");
-        this.elementToTypeTo = document.createElement("span");
-        this.givenElement = elem;
+    index;
+    typeForward;
+    givenArray;
+    toType;
+    clock;
+    root;
+    constructor(array, root, typeSpeed) {
+        this.index = 0;
+        this.typeForward = true;
+        this.toType = [];
+        this.givenArray = array;
+        this.clock = new Clock(this.type, typeSpeed);
+        this.root = root;
     }
-    setTypeContainer = () => {
-        this.cursor.setCursor(this.cursorArea, 200);
-        this.givenElement.appendChild(this.elementToTypeTo);
-        this.givenElement.appendChild(this.cursorArea);
-    };
-    typeElements = (array, typeSpeed, remove) => {
-        this.setTypeContainer();
-        this.typer(array, this.elementToTypeTo, typeSpeed, remove);
-    };
-    typer = (elementToTypeOut, elementToWriteTo, typeSpeed, remove) => {
-        let i = 0;
-        const type = () => {
-            setTimeout(() => {
-                if (i == elementToTypeOut.length && remove) {
-                    this.remover(elementToTypeOut, elementToWriteTo, typeSpeed);
-                }
-                if (i == elementToTypeOut.length) {
-                    return;
-                }
-                if (i < elementToTypeOut.length) {
-                    elementToWriteTo.innerHTML =
-                        elementToWriteTo.innerHTML + elementToTypeOut[i];
-                    console.log(elementToTypeOut[i]);
-                    i++;
-                    setTimeout(type, typeSpeed);
-                }
-            }, typeSpeed);
-        };
-        type();
-    };
-    remover = (elementToTypeOut, elementToWriteTo, typeSpeed) => {
-        let i = 0;
-        console.log(elementToTypeOut);
-        let toType = elementToTypeOut;
-        setTimeout(() => {
-            const type = () => {
-                if (i == elementToTypeOut.length) {
-                    return;
-                }
-                if (i < elementToTypeOut.length) {
-                    toType = toType.slice(0, -1);
-                    console.log(toType);
-                    elementToWriteTo.innerHTML = toType.join("");
-                    i++;
-                    setTimeout(type, typeSpeed);
-                }
-            };
-            type();
-        }, 1000);
+    start = () => this.clock.run();
+    type = () => {
+        const targetHtmlElement = this.root;
+        const maxIndex = this.givenArray.length;
+        if (!targetHtmlElement)
+            throw new Error("Error");
+        if (this.index == maxIndex && this.typeForward === true) {
+            this.typeForward = !this.typeForward;
+            return;
+        }
+        if (this.index < maxIndex && this.typeForward === true) {
+            this.toType.push(this.givenArray[this.index]);
+            targetHtmlElement.innerHTML = this.toType.join("");
+            this.index++;
+            return;
+        }
+        if (this.index >= 0 && this.typeForward === false) {
+            targetHtmlElement.innerHTML = this.givenArray
+                .slice(0, this.index)
+                .join("");
+            this.index--;
+            return;
+        }
     };
 }
+// NOTES
+// Intersection observer // w js
+// Observer Pattern / pub sub /// RX
+// .subscribe(callback) <-- to dostaje ui
+// this.subcribers.push(subscriber)
+// .emmit() na scroll + poczytaj jak zrobić scrolla z performance, eventlistener passive: true
+// this.subcribers.foreach(subscriber => {
+//   subscriber.callback(this.data)
+// })
+// const typer = new Typer(".element")
+// typer.buildUI()
+// typer.start()
+// typer.stop()
+// Logic
+// UI <-- Clock
+// UI <-- TypeWritter
+// genrateCurrentString
+// this.currentString = this.givenString.slice(0, this.currentIndex)
+// setInvertal(cb, 1000)
+// cb ->
+// this.direction = boolean
+// if (this.index === length && this.direction) {
+//   this.direction = !this.direction
+// }
+// if (this.direction) {
+//   type()
+// this.currentIndex++
+// } else {
+//   remove()
+// this.currentIndex--
+// }

@@ -1,11 +1,3 @@
-// Twoim zadaniem jest odtworzyć efekt wizualny pisania, na podstawie biblioteki: https://mattboldt.com/demos/typed-js/
-// Instancja klasy Typed:
-
-// ma pozwalać na wskazanie elementu html, w którym aktualny tekst zawarty w elemencie zostanie zdobiony tym elementem.
-// ma tworzyć za wskazanym elementem, mrugająca, pionową linię symulującą kursor,
-// ma pozwalać na wsazanie czy pisane mają być wyrazy czy litery,
-// ma pozwalać na wskazanie tempa pisania w ilościach liter na minutę (defaultowo 120/min)
-
 // *************************************
 // ************* UTILITIES *************
 // *************************************
@@ -22,6 +14,29 @@ interface IOptions {
   strings: Array<string>;
   typeSpeed: number;
   removeAfter: boolean;
+}
+
+class UIController {
+  cursor: Cursor;
+  givenElement: HTMLElement;
+  constructor(root: HTMLElement) {
+    this.cursor = new Cursor();
+    this.givenElement = root;
+  }
+  setTypeContainer = () => {
+    console.log(this.givenElement);
+    const elementToTypeTo = document.createElement("span");
+    const cursorArea = document.createElement("span");
+    this.cursor.setCursor(cursorArea, 200);
+    this.givenElement.appendChild(elementToTypeTo);
+    this.givenElement.appendChild(cursorArea);
+    return this;
+  };
+  getElementToTypeTo = () => {
+    const elementToTypeTo = this.givenElement.firstChild;
+    console.log(elementToTypeTo);
+    return elementToTypeTo;
+  };
 }
 
 class Cursor {
@@ -41,9 +56,20 @@ class Cursor {
         visible = !visible;
         // return cursor;
       }
-    }, typeSpeed / 2);
+    }, typeSpeed);
     element.appendChild(cursor);
   };
+}
+
+class Clock {
+  callback: Function;
+  interval: number;
+  constructor(callback: Function, interval: number) {
+    this.callback = callback;
+    this.interval = interval;
+  }
+
+  run = () => setInterval(this.callback, this.interval);
 }
 
 // *************************************
@@ -53,9 +79,15 @@ class Cursor {
 class TypingController {
   constructor(elem: string, options: IOptions) {
     const targetHtmlElement = document.querySelector(elem) as HTMLElement;
-    const typeWriter = new TypeWriter(targetHtmlElement);
+    const ui = new UIController(targetHtmlElement);
     const typeSpeed = options.typeSpeed;
-    const removeAfter = options.removeAfter;
+
+    ui.setTypeContainer();
+    const root = ui.getElementToTypeTo();
+
+    if (!root) throw new Error("Invalid element");
+
+    console.log("TYPINGCONTROLLER START");
 
     let itemsToType = [];
 
@@ -65,7 +97,11 @@ class TypingController {
       itemsToType = options.strings.map((el) => el + " ");
     }
     console.log(itemsToType);
-    typeWriter.typeElements(itemsToType, typeSpeed, removeAfter);
+    console.log(root);
+
+    const typer = new TypeWriter(itemsToType, root as HTMLElement, typeSpeed);
+    // typeWriter.typeElements(itemsToType, typeSpeed, removeAfter);
+    typer.start();
   }
 }
 
@@ -73,100 +109,65 @@ class TypingController {
 // ************* TYPE EFFECT ***********
 // *************************************
 
+class TypeWriter {
+  index: number;
+  typeForward: boolean;
+  givenArray: Array<string>;
+  toType: Array<string>;
+  clock: Clock;
+  root: HTMLElement;
+  constructor(array: Array<string>, root: HTMLElement, typeSpeed: number) {
+    this.index = 0;
+    this.typeForward = true;
+    this.toType = [];
+    this.givenArray = array;
+    this.clock = new Clock(this.type, typeSpeed);
+    this.root = root;
+  }
+
+  start = () => this.clock.run();
+
+  type = () => {
+    const targetHtmlElement = this.root;
+    const maxIndex = this.givenArray.length;
+
+    if (!targetHtmlElement) throw new Error("Error");
+
+    if (this.index == maxIndex && this.typeForward === true) {
+      this.typeForward = !this.typeForward;
+      return;
+    }
+
+    if (this.index < maxIndex && this.typeForward === true) {
+      this.toType.push(this.givenArray[this.index]);
+
+      targetHtmlElement.innerHTML = this.toType.join("");
+      this.index++;
+      return;
+    }
+
+    if (this.index >= 0 && this.typeForward === false) {
+      targetHtmlElement.innerHTML = this.givenArray
+        .slice(0, this.index)
+        .join("");
+      this.index--;
+      return;
+    }
+  };
+}
+
+// NOTES
 
 // Intersection observer // w js
 
 // Observer Pattern / pub sub /// RX
 // .subscribe(callback) <-- to dostaje ui
-    // this.subcribers.push(subscriber)
+// this.subcribers.push(subscriber)
 
 // .emmit() na scroll + poczytaj jak zrobić scrolla z performance, eventlistener passive: true
-    // this.subcribers.foreach(subscriber => {
-    //   subscriber.callback(this.data)
-    // })
-
-
-class TypeWriter {
-  cursor: Cursor;
-  cursorArea: HTMLElement;
-  elementToTypeTo: HTMLElement;
-  givenElement: HTMLElement;
-  constructor(root: HTMLElement) {
-    this.cursor = new Cursor();
-    this.cursorArea = document.createElement("span");
-    this.elementToTypeTo = document.createElement("span");
-    this.givenElement = root;
-  }
-
-  init() {
-    this.ui.prepare() 
-    this.clock.start()
-  }
-
-  setTypeContainer = () => {
-    this.cursor.setCursor(this.cursorArea, 200);
-    this.givenElement.appendChild(this.elementToTypeTo);
-    this.givenElement.appendChild(this.cursorArea);
-  };
-
-  typeElements = (array: Array<string>, typeSpeed: number, remove: boolean) => {
-    this.setTypeContainer();
-    this.typer(array, this.elementToTypeTo, typeSpeed, remove);
-  };
-
-  typer = (
-    elementToTypeOut: Array<string>,
-    elementToWriteTo: HTMLElement,
-    typeSpeed: number,
-    remove: boolean
-  ) => {
-    let i = 0;
-
-    const type = () => {
-      // setInvertal
-      setTimeout(() => {
-        if (i == elementToTypeOut.length && remove) {
-          this.remover(elementToTypeOut, elementToWriteTo, typeSpeed);
-        }
-        if (i == elementToTypeOut.length) {
-          return;
-        }
-        if (i < elementToTypeOut.length) {
-          elementToWriteTo.innerHTML =
-            elementToWriteTo.innerHTML + elementToTypeOut[i];
-          console.log(elementToTypeOut[i]);
-          i++;
-          setTimeout(type, typeSpeed);
-        }
-      }, typeSpeed);
-    };
-    type();
-  };
-  remover = (
-    elementToTypeOut: Array<string>,
-    elementToWriteTo: HTMLElement,
-    typeSpeed: number
-  ) => {
-    let i = 0;
-    console.log(elementToTypeOut);
-    let toType = elementToTypeOut as Array<string>;
-    setTimeout(() => {
-      const type = () => {
-        if (i == elementToTypeOut.length) {
-          return;
-        }
-        if (i < elementToTypeOut.length) {
-          toType = toType.slice(0, -1);
-          console.log(toType);
-          elementToWriteTo.innerHTML = toType.join("");
-          i++;
-          setTimeout(type, typeSpeed);
-        }
-      };
-      type();
-    }, 1000);
-  };
-}
+// this.subcribers.foreach(subscriber => {
+//   subscriber.callback(this.data)
+// })
 
 // const typer = new Typer(".element")
 // typer.buildUI()
@@ -177,11 +178,10 @@ class TypeWriter {
 // UI <-- Clock
 // UI <-- TypeWritter
 
-
 // genrateCurrentString
 // this.currentString = this.givenString.slice(0, this.currentIndex)
 
-// setInvertal(cb, 1000) 
+// setInvertal(cb, 1000)
 // cb ->
 // this.direction = boolean
 // if (this.index === length && this.direction) {
@@ -190,8 +190,8 @@ class TypeWriter {
 
 // if (this.direction) {
 //   type()
-      // this.currentIndex++
+// this.currentIndex++
 // } else {
 //   remove()
-      // this.currentIndex--
+// this.currentIndex--
 // }
