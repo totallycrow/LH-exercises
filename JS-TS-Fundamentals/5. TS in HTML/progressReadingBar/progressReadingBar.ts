@@ -90,12 +90,12 @@ runner.start();
 //         // CALCULATE DIFFERENCE ON SCROLL
 
 //         // test
-//         let w =
+//         let width =
 //           ((document.body.scrollTop || document.documentElement.scrollTop) /
 //             (document.documentElement.scrollHeight -
 //               document.documentElement.clientHeight)) *
 //           100;
-//         bar.style.setProperty("width", w + "%");
+//         bar.style.setProperty("width", width + "%");
 //       });
 //       intersectionObserver.unobserve(entry.target);
 //     });
